@@ -28,11 +28,14 @@ export default function CurrentPlayerCard({ player, gameActive, onEndGame }) {
           </button>
         )}
       </div>
-      <div className="turn-progress-track">
-        <div
-          className="turn-progress-fill"
-          style={{ width: `${pct}%`, backgroundColor: player.color }}
-        />
+      <div className="turn-progress-wrapper">
+        <div className="turn-progress-track">
+          <div
+            className="turn-progress-fill"
+            style={{ width: `${pct}%`, backgroundColor: player.color }}
+          />
+        </div>
+        <span className="turn-progress-text">{player.total}/50</span>
       </div>
     </div>
   );

@@ -215,20 +215,44 @@ body.in-game #game.screen,
 }
 
 /* Minimal Progress Track in Player Status Card */
+.turn-progress-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .turn-progress-track {
     width: 100%;
-    max-width: 220px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
-    margin: 5px auto 0;
+    height: 16px;
+    background: #11151e;
+    border-radius: 8px;
     overflow: hidden;
+    position: relative;
+    border: 1px solid #283040;
 }
 
 .turn-progress-fill {
     height: 100%;
-    border-radius: 999px;
-    transition: width 0.3s ease;
+    border-radius: 0;
+    transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.turn-progress-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+    line-height: 1;
 }
 
 /* Scoreboard Scrollable Container in Middle */
@@ -444,16 +468,16 @@ body.in-game #game.screen,
     padding: 18px 0;
     min-height: 60px;
     border-radius: 10px;
-    border: 1px solid #2d384a;
-    border-top: 1px solid #4a576d;
-    background: #181e2b;
+    border: 1px solid #232b38;
+    border-top: 1px solid #364254;
+    background: #151a26;
     font-size: 22px;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
     cursor: pointer;
     color: #f0f2f5;
     position: relative;
-    box-shadow: 0 4px 0 #0d121a;
+    box-shadow: 0 4px 0 #0f1520;
     transition: transform 0.08s ease, background-color 0.12s, box-shadow 0.08s;
 }
 
