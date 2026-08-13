@@ -305,16 +305,18 @@ body.in-game #game.screen,
     position: sticky;
     left: 0;
     z-index: 35;
-    width: 48px;
-    min-width: 48px;
-    margin-right: -4px; /* Cancels row gap so scrolled 1st cell ends flush behind sticky column */
+    width: 44px;
+    min-width: 44px;
+    margin-right: 6px; /* Clean gap between sticky indicator column and player cells */
+    margin-top: -2px;   /* Severs/seals vertical gap between rows */
+    margin-bottom: -2px;
     box-sizing: border-box;
     text-align: center;
     font-weight: 800;
     font-size: 0.85rem;
     font-variant-numeric: tabular-nums;
     background-color: #11151e !important;
-    padding: 6px 0;
+    padding: 8px 0;
     border-right: 2px solid #283040;
     color: var(--muted);
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.8);
@@ -335,6 +337,9 @@ body.in-game #game.screen,
 .score-row.header-row .round-header {
     z-index: 50 !important;
     background-color: #11151e !important;
+    margin-top: -4px;
+    margin-bottom: -4px;
+    padding: 8px 0;
 }
 
 /* Sticky Total Row (Bottom) */
@@ -352,6 +357,9 @@ body.in-game #game.screen,
 .score-row.total-row .total-label {
     z-index: 45 !important;
     background-color: #11151e !important;
+    margin-top: -4px;
+    margin-bottom: -4px;
+    padding: 8px 0;
 }
 
 /* Player Name Column Headers */
