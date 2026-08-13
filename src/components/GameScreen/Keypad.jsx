@@ -1,6 +1,7 @@
 import React from "react";
+import { UndoIcon } from "../icons/Icons";
 
-export default function Keypad({ onKeyPress, onUndo, onEndGame }) {
+export default function Keypad({ onKeyPress, onUndo }) {
   const keys = Array.from({ length: 12 }, (_, i) => i + 1);
 
   return (
@@ -17,32 +18,24 @@ export default function Keypad({ onKeyPress, onUndo, onEndGame }) {
             {k}
           </button>
         ))}
+      </div>
+      <div className="keypad-bottom-row">
         <button
           type="button"
-          className="key"
           id="missBtn"
+          className="btn-miss"
           data-value="X"
           onClick={() => onKeyPress("X")}
         >
           X
         </button>
-      </div>
-      <div className="keypad-actions">
         <button
           type="button"
           id="undoBtn"
-          className="btn ghost"
+          className="btn-undo"
           onClick={onUndo}
         >
-          Undo
-        </button>
-        <button
-          type="button"
-          id="endGameBtn"
-          className="btn danger"
-          onClick={onEndGame}
-        >
-          End game
+          <UndoIcon size={16} /> Undo
         </button>
       </div>
     </section>

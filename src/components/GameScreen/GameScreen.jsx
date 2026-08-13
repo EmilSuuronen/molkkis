@@ -20,7 +20,11 @@ export default function GameScreen({
 
   return (
     <main id="game" className="screen" style={{ display: "flex" }}>
-      <CurrentPlayerCard player={currentPlayer} gameActive={gameActive} />
+      <CurrentPlayerCard
+        player={currentPlayer}
+        gameActive={gameActive}
+        onEndGame={onEndGame}
+      />
       <Scoreboard
         players={players}
         currentPlayerIndex={currentPlayerIndex}
@@ -32,7 +36,6 @@ export default function GameScreen({
       <Keypad
         onKeyPress={onKeyPress}
         onUndo={onUndo}
-        onEndGame={onEndGame}
       />
     </main>
   );
