@@ -241,7 +241,7 @@ body.in-game #game.screen,
     z-index: 35;
     width: 44px;
     min-width: 44px;
-    margin: 0 4px 0 0 !important;
+    margin: 0 !important;
     box-sizing: border-box;
     text-align: center;
     font-weight: 800;
@@ -273,7 +273,7 @@ body.in-game #game.screen,
 .score-row.header-row .round-header {
     z-index: 50 !important;
     background-color: #11151e !important;
-    margin: 0 4px 0 0 !important;
+    margin: 0 !important;
     padding: 9px 0;
     border-bottom: none;
 }
@@ -293,7 +293,7 @@ body.in-game #game.screen,
 .score-row.total-row .total-label {
     z-index: 45 !important;
     background-color: #11151e !important;
-    margin: 0 4px 0 0 !important;
+    margin: 0 !important;
     padding: 9px 0;
     border-bottom: none;
 }
