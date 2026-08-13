@@ -14,6 +14,8 @@ export const TRANSLATIONS = {
     removePlayer: "Poista pelaaja",
     minPlayersAlert: "Lisää vähintään kaksi pelaajaa peliin!",
     duplicateNamesAlert: "Anna kaikille pelaajille eri nimet!",
+    colorPickerTitle: "Pelaajan väri",
+    colorPickerSubtitle: "Valitse pelaajalle väri:",
     
     // Install Card
     appAvailableTitle: "Mölkkis sovellus!",
@@ -115,7 +117,7 @@ export const TRANSLATIONS = {
     
     // Mölkky Setup / Rules Card
     molkkySetupTitle: "Mölkky Pin Setup",
-    molkkySetupNote: "Arrange pins tightly in this exact order before the first throw.",
+    molkkySetupNote: "Official Mölkky throwing distance is 3.5 meters (11.5 feet).",
     
     // Footer
     builtWithLove: "Mölkky scorekeeper for outdoor games",
@@ -208,7 +210,7 @@ export const TRANSLATIONS = {
     
     // Mölkky Setup / Rules Card
     molkkySetupTitle: "Mölkky uppställning",
-    molkkySetupNote: "Placera käglorna tätt i denna ordning före första kastet.",
+    molkkySetupNote: "Officiellt Mölkky kastavstånd är 3,5 meter",
     
     // Footer
     builtWithLove: "Mölkky poängräknare för stugan och trädgården",

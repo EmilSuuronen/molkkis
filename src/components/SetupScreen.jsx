@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import PwaInstallCard from "./PwaInstallCard";
+import ColorPickerModal from "./ColorPickerModal";
 
 function LogPin({ number }) {
   const [popped, setPopped] = useState(false);
@@ -27,41 +28,26 @@ function LogPin({ number }) {
 }
 
 export default function SetupScreen({
-  playerNames,
-  setPlayerNames,
+  setupPlayers,
+  setSetupPlayers,
   onStartGame,
   onRandomizeOrder,
+  onAddPlayer,
   showAlert,
   gameActive,
   t
 }) {
   const inputRefs = useRef([]);
+  const [colorPickerIndex, setColorPickerIndex] = useState(null);
 
   if (gameActive) return null;
 
-  const handleAddPlayer = (name = "", shouldFocus = true) => {
-    setPlayerNames((prev) => {
-      const next = [...prev, name];
-      if (shouldFocus) {
-        requestAnimationFrame(() => {
-          const lastIdx = next.length - 1;
-          if (inputRefs.current[lastIdx]) {
-            inputRefs.current[lastIdx].focus();
-            inputRefs.current[lastIdx].select();
-            inputRefs.current[lastIdx].scrollIntoView({ behavior: "smooth", block: "nearest" });
-          }
-        });
-      }
-      return next;
-    });
-  };
-
   const handleRemovePlayer = (index) => {
-    setPlayerNames((prev) => prev.filter((_, i) => i !== index));
+    setSetupPlayers((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleMove = (index, direction) => {
-    setPlayerNames((prev) => {
+    setSetupPlayers((prev) => {
       const next = [...prev];
       const targetIdx = direction === "up" ? index - 1 : index + 1;
       if (targetIdx < 0 || targetIdx >= next.length) return prev;
@@ -71,19 +57,31 @@ export default function SetupScreen({
   };
 
   const handleChangeName = (index, value) => {
-    setPlayerNames((prev) => {
+    setSetupPlayers((prev) => {
       const next = [...prev];
-      next[index] = value;
+      next[index] = { ...next[index], name: value };
       return next;
     });
+  };
+
+  const handleChangeColor = (colorHex) => {
+    if (colorPickerIndex !== null && colorPickerIndex >= 0) {
+      setSetupPlayers((prev) => {
+        const next = [...prev];
+        if (next[colorPickerIndex]) {
+          next[colorPickerIndex] = { ...next[colorPickerIndex], color: colorHex };
+        }
+        return next;
+      });
+    }
   };
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (index === playerNames.length - 1) {
-        handleAddPlayer("", true);
-      } else if (index >= 0 && index < playerNames.length - 1) {
+      if (index === setupPlayers.length - 1) {
+        onAddPlayer("", true, inputRefs);
+      } else if (index >= 0 && index < setupPlayers.length - 1) {
         if (inputRefs.current[index + 1]) {
           inputRefs.current[index + 1].focus();
           inputRefs.current[index + 1].select();
@@ -94,12 +92,17 @@ export default function SetupScreen({
 
   const handleStart = (e) => {
     if (e) e.preventDefault();
-    if (playerNames.length === 0) {
+    if (setupPlayers.length === 0) {
       showAlert(t("minPlayersAlert"), t("playersTitle"));
       return;
     }
     onStartGame();
   };
+
+  const activeColorPickerPlayer =
+    colorPickerIndex !== null && setupPlayers[colorPickerIndex]
+      ? setupPlayers[colorPickerIndex]
+      : null;
 
   return (
     <main id="setup" className="screen active">
@@ -107,19 +110,32 @@ export default function SetupScreen({
       <section className="card">
         <h2>{t("playersTitle")}</h2>
         <div id="playersList" className="players-list">
-          {playerNames.map((name, index) => (
+          {setupPlayers.map((player, index) => (
             <div className="player-row" key={index}>
+              {/* Color Ball Button */}
+              <button
+                type="button"
+                className="btn-player-color-ball"
+                style={{ backgroundColor: player.color }}
+                onClick={() => setColorPickerIndex(index)}
+                title={t("colorPickerTitle")}
+                aria-label={`Change color for ${player.name || `Player ${index + 1}`}`}
+              >
+                <span className="color-ball-inner-dot" />
+              </button>
+
               <input
                 ref={(el) => (inputRefs.current[index] = el)}
                 type="text"
-                placeholder={!name ? t("playerPlaceholder", { num: index + 1 }) : ""}
-                value={name}
+                placeholder={!player.name ? t("playerPlaceholder", { num: index + 1 }) : ""}
+                value={player.name}
                 aria-label="Player name"
                 maxLength={12}
                 enterKeyHint="next"
                 onChange={(e) => handleChangeName(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
               />
+
               <div className="order-buttons">
                 <button
                   type="button"
@@ -140,6 +156,7 @@ export default function SetupScreen({
                   ▼
                 </button>
               </div>
+
               <button
                 type="button"
                 className="btn remove-btn"
@@ -157,7 +174,7 @@ export default function SetupScreen({
             type="button"
             id="addPlayerBtn"
             className="btn"
-            onClick={() => handleAddPlayer("", true)}
+            onClick={() => onAddPlayer("", true, inputRefs)}
           >
             {t("addPlayer")}
           </button>
@@ -228,6 +245,16 @@ export default function SetupScreen({
           <p className="molkky-note">{t("molkkySetupNote")}</p>
         </section>
       </div>
+
+      {/* Color Picker Modal */}
+      <ColorPickerModal
+        isOpen={colorPickerIndex !== null}
+        onClose={() => setColorPickerIndex(null)}
+        selectedColor={activeColorPickerPlayer ? activeColorPickerPlayer.color : ""}
+        onSelectColor={handleChangeColor}
+        playerName={activeColorPickerPlayer ? activeColorPickerPlayer.name : ""}
+        t={t}
+      />
     </main>
   );
 }

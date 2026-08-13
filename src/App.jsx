@@ -8,7 +8,7 @@ import SettingsModal from "./components/SettingsModal";
 import LanguageModal from "./components/LanguageModal";
 import { TRANSLATIONS, getTranslation } from "./i18n/translations";
 import {
-  assignPlayerColor,
+  getRandomPlayerColor,
   LOCAL_STORAGE_KEY
 } from "./constants/gameConstants";
 import {
@@ -26,7 +26,15 @@ const THEME_STORAGE_KEY = "molkkis_theme";
 const LANG_STORAGE_KEY = "molkkis_language";
 
 export default function App() {
-  const [playerNames, setPlayerNames] = useState(["", ""]);
+  const [setupPlayers, setSetupPlayers] = useState(() => {
+    const c1 = getRandomPlayerColor([]);
+    const c2 = getRandomPlayerColor([c1]);
+    return [
+      { name: "", color: c1 },
+      { name: "", color: c2 }
+    ];
+  });
+
   const [players, setPlayers] = useState([]);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [gameActive, setGameActive] = useState(false);
@@ -176,13 +184,32 @@ export default function App() {
   };
 
   const handleRandomizeOrder = () => {
-    setPlayerNames((prev) => shuffleArray(prev));
+    setSetupPlayers((prev) => shuffleArray(prev));
+  };
+
+  const handleAddPlayer = (name = "", shouldFocus = true, inputRefs = null) => {
+    setSetupPlayers((prev) => {
+      const usedColors = prev.map((p) => p.color);
+      const nextColor = getRandomPlayerColor(usedColors);
+      const next = [...prev, { name, color: nextColor }];
+      if (shouldFocus && inputRefs) {
+        requestAnimationFrame(() => {
+          const lastIdx = next.length - 1;
+          if (inputRefs.current && inputRefs.current[lastIdx]) {
+            inputRefs.current[lastIdx].focus();
+            inputRefs.current[lastIdx].select();
+            inputRefs.current[lastIdx].scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+        });
+      }
+      return next;
+    });
   };
 
   const handleStartGame = () => {
-    const newPlayers = playerNames.map((name, index) => ({
-      name: name.trim() || t("playerPlaceholder", { num: index + 1 }),
-      color: assignPlayerColor(index),
+    const newPlayers = setupPlayers.map((sp, index) => ({
+      name: sp.name.trim() || t("playerPlaceholder", { num: index + 1 }),
+      color: sp.color || getRandomPlayerColor(),
       scores: [],
       total: 0,
       misses: 0,
@@ -387,10 +414,11 @@ export default function App() {
         t={t}
       />
       <SetupScreen
-        playerNames={playerNames}
-        setPlayerNames={setPlayerNames}
+        setupPlayers={setupPlayers}
+        setSetupPlayers={setSetupPlayers}
         onStartGame={handleStartGame}
         onRandomizeOrder={handleRandomizeOrder}
+        onAddPlayer={handleAddPlayer}
         showAlert={showAlert}
         gameActive={gameActive}
         t={t}

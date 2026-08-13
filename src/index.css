@@ -1198,3 +1198,98 @@ body.in-game #game.screen,
     font-weight: 800;
     color: var(--accent);
 }
+
+/* Color Ball Button in Player Setup Row */
+.btn-player-color-ball {
+    appearance: none;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: inset 0 -3px 4px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.35);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-player-color-ball:hover {
+    transform: scale(1.15);
+    box-shadow: inset 0 -3px 4px rgba(0,0,0,0.3), 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.color-ball-inner-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    top: 5px;
+    left: 7px;
+    filter: blur(1px);
+}
+
+/* 4x4 Color Picker Modal */
+.color-picker-modal-card {
+    max-width: 380px;
+}
+
+.color-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 16px 0 8px;
+    justify-items: center;
+}
+
+.color-ball-btn {
+    appearance: none;
+    border: none;
+    background: transparent;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease;
+}
+
+.color-ball-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2.5px solid rgba(255, 255, 255, 0.45);
+    box-shadow: inset -4px -6px 8px rgba(0, 0, 0, 0.4), inset 3px 3px 6px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.35);
+    transition: all 0.15s ease;
+}
+
+.color-ball-btn:hover {
+    transform: scale(1.14);
+}
+
+.color-ball-btn.selected {
+    transform: scale(1.12);
+}
+
+.color-ball-btn.selected .color-ball-inner {
+    border-color: #ffffff;
+    box-shadow: inset -4px -6px 8px rgba(0, 0, 0, 0.4), 0 0 0 3px var(--accent), 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.color-ball-check {
+    position: absolute;
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 900;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+}
