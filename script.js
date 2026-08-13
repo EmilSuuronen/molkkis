@@ -70,8 +70,78 @@ function triggerPwaInstall() {
             deferredPrompt = null;
         });
     } else {
-        alert("To install Mölkkis:\n\n• iOS (Safari): Tap the Share icon and select 'Add to Home Screen'.\n• Android / Chrome: Tap the menu (⋮) and select 'Install app' or 'Add to Home Screen'.");
+        showAlert(
+            "To install Mölkkis:\n\n• iOS (Safari): Tap the Share icon and select 'Add to Home Screen'.\n• Android / Chrome: Tap the menu (⋮) and select 'Install app' or 'Add to Home Screen'.",
+            "App Installation"
+        );
     }
+}
+
+function showModal({ title = "Notice", message = "", confirmText = "OK", cancelText = "Cancel", showCancel = false }) {
+    return new Promise((resolve) => {
+        const overlay = document.getElementById("modalOverlay");
+        const titleEl = document.getElementById("modalTitle");
+        const bodyEl = document.getElementById("modalBody");
+        const confirmBtn = document.getElementById("modalConfirmBtn");
+        const cancelBtn = document.getElementById("modalCancelBtn");
+
+        if (!overlay || !titleEl || !bodyEl || !confirmBtn || !cancelBtn) {
+            if (showCancel) {
+                resolve(window.confirm(message));
+            } else {
+                alert(message);
+                resolve(true);
+            }
+            return;
+        }
+
+        titleEl.textContent = title;
+        bodyEl.textContent = message;
+        confirmBtn.textContent = confirmText;
+        cancelBtn.textContent = cancelText;
+
+        if (showCancel) {
+            cancelBtn.style.display = "inline-block";
+        } else {
+            cancelBtn.style.display = "none";
+        }
+
+        overlay.classList.add("active");
+        overlay.setAttribute("aria-hidden", "false");
+
+        function cleanup(result) {
+            overlay.classList.remove("active");
+            overlay.setAttribute("aria-hidden", "true");
+            confirmBtn.removeEventListener("click", onConfirm);
+            cancelBtn.removeEventListener("click", onCancel);
+            overlay.removeEventListener("click", onOverlayClick);
+            document.removeEventListener("keydown", onKeyDown);
+            resolve(result);
+        }
+
+        function onConfirm() { cleanup(true); }
+        function onCancel() { cleanup(false); }
+        function onOverlayClick(e) { if (e.target === overlay) cleanup(false); }
+        function onKeyDown(e) {
+            if (e.key === "Escape") cleanup(false);
+            if (e.key === "Enter") cleanup(true);
+        }
+
+        confirmBtn.addEventListener("click", onConfirm);
+        cancelBtn.addEventListener("click", onCancel);
+        overlay.addEventListener("click", onOverlayClick);
+        document.addEventListener("keydown", onKeyDown);
+
+        confirmBtn.focus();
+    });
+}
+
+function showAlert(message, title = "Notification") {
+    return showModal({ title, message, showCancel: false });
+}
+
+function showConfirm(message, title = "Confirmation") {
+    return showModal({ title, message, showCancel: true, confirmText: "Yes", cancelText: "Cancel" });
 }
 
 function saveGameState() {
@@ -521,15 +591,15 @@ function exitEditMode() {
     editModeCell = null;
 }
 
-function showFinalResults() {
+async function showFinalResults() {
     clearGameState();
-    let message = "Game Over!\n\nFinal Results:\n";
+    let message = "Final Results:\n\n";
     winners
         .sort((a, b) => a.place - b.place)
         .forEach(w => {
             message += `${w.place}. ${w.name} (${w.total} points)\n`;
         });
-    alert(message);
+    await showAlert(message, "🏆 Game Over!");
 
     document.getElementById("setup").style.display = "block";
     document.getElementById("game").style.display = "none";
@@ -537,9 +607,9 @@ function showFinalResults() {
     if (footer) footer.style.display = "block";
 }
 
-function endGame() {
+async function endGame() {
     if (!gameActive) return;
-    const confirmEnd = window.confirm("Are you sure you want to end the game?");
+    const confirmEnd = await showConfirm("Are you sure you want to end the game?", "End Game");
     if (!confirmEnd) return;
 
     gameActive = false;
@@ -551,7 +621,7 @@ function endGame() {
         }
     });
 
-    showFinalResults();
+    await showFinalResults();
 
     document.getElementById("setup").style.display = "block";
     document.getElementById("game").style.display = "none";
