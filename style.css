@@ -214,25 +214,28 @@ body.in-game #game.screen,
     max-height: 100dvh;
     width: 100vw;
     max-width: 100vw;
-    padding: 8px;
+    padding: 0 !important;
     margin: 0 auto;
     box-sizing: border-box;
     overflow: hidden;
     position: absolute;
     inset: 0;
-    gap: 6px;
+    gap: 0 !important; /* Sections touch vertically with zero gap */
+    background: var(--bg);
 }
 
 /* Current Player Status Card at Top */
 .current-player-card {
     flex: 0 0 auto;
     background: var(--card);
-    border-radius: 12px;
-    padding: 8px 12px;
+    border-radius: 0 !important;
+    padding: 10px 14px;
     text-align: center;
     margin: 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    border: none;
+    border-bottom: 1px solid #283040;
+    z-index: 60;
 }
 
 .current-player-card h3 {
@@ -271,20 +274,20 @@ body.in-game #game.screen,
     min-height: 0;
     overflow: auto;
     background: var(--card);
-    border-radius: 12px;
+    border-radius: 0 !important;
     padding: 0;
     margin: 0;
     position: relative;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: none;
 }
 
 /* Score Table Grid Layout */
 #scoreTable {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 0 !important; /* Zero gap between rows so round indicator boxes touch flush vertically */
     width: max-content;
     min-width: 100%;
     padding: 0;
@@ -292,8 +295,8 @@ body.in-game #game.screen,
 
 .score-row {
     display: flex;
-    gap: 4px;
-    align-items: center;
+    gap: 2px;
+    align-items: stretch;
     padding: 0;
     box-sizing: border-box;
 }
@@ -307,19 +310,21 @@ body.in-game #game.screen,
     z-index: 35;
     width: 44px;
     min-width: 44px;
-    margin-right: 6px; /* Clean gap between sticky indicator column and player cells */
-    margin-top: -2px;   /* Severs/seals vertical gap between rows */
-    margin-bottom: -2px;
+    margin: 0 4px 0 0 !important; /* Zero vertical margin so boxes touch flush vertically */
     box-sizing: border-box;
     text-align: center;
     font-weight: 800;
     font-size: 0.85rem;
     font-variant-numeric: tabular-nums;
     background-color: #11151e !important;
-    padding: 8px 0;
+    padding: 9px 0;
     border-right: 2px solid #283040;
+    border-bottom: 1px solid #202733; /* Clean subtle grid divider between numbers */
     color: var(--muted);
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Sticky Header Row (Top) */
@@ -328,7 +333,7 @@ body.in-game #game.screen,
     top: 0;
     z-index: 30;
     background-color: #11151e !important;
-    padding: 4px 0;
+    padding: 0;
     border-bottom: 2px solid #283040;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
@@ -337,9 +342,9 @@ body.in-game #game.screen,
 .score-row.header-row .round-header {
     z-index: 50 !important;
     background-color: #11151e !important;
-    margin-top: -4px;
-    margin-bottom: -4px;
-    padding: 8px 0;
+    margin: 0 4px 0 0 !important;
+    padding: 9px 0;
+    border-bottom: none;
 }
 
 /* Sticky Total Row (Bottom) */
@@ -348,7 +353,7 @@ body.in-game #game.screen,
     bottom: 0;
     z-index: 28;
     background-color: #11151e !important;
-    padding: 4px 0;
+    padding: 0;
     border-top: 2px solid #283040;
     box-shadow: 0 -6px 14px rgba(0, 0, 0, 0.6);
 }
@@ -357,9 +362,9 @@ body.in-game #game.screen,
 .score-row.total-row .total-label {
     z-index: 45 !important;
     background-color: #11151e !important;
-    margin-top: -4px;
-    margin-bottom: -4px;
-    padding: 8px 0;
+    margin: 0 4px 0 0 !important;
+    padding: 9px 0;
+    border-bottom: none;
 }
 
 /* Player Name Column Headers */
@@ -453,11 +458,12 @@ body.in-game #game.screen,
 .keypad.card {
     flex: 0 0 auto;
     margin: 0;
-    padding: 8px;
+    padding: 8px 10px 10px 10px;
     background: var(--card);
-    border-radius: 12px;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 !important;
+    box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.6);
+    border: none;
+    border-top: 1px solid #283040;
     z-index: 50;
 }
 
