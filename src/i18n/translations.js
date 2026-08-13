@@ -26,6 +26,20 @@ export const TRANSLATIONS = {
     molkkySetupTitle: "Mölkky-keilojen asettelu",
     molkkySetupNote: "Mölkyn virallinen heittomatka on 3.5 metriä.",
     
+    // Rules Section
+    rulesTitle: "Mölkky-säännöt & pistelasku",
+    rule1Title: "Asettelu & heitto:",
+    rule1Text: "Aseta keilat 1–12 ryhmään 3,5 metrin päähän heittoviivasta. Mölkky-pikka heitetään aina alakautta.",
+    rule2Title: "Pisteiden lasku:",
+    rule2Item1: "1 kaadettu keila: saat keilan osoittaman pistemäärän (1–12 pistettä).",
+    rule2Item2: "Useampi kaadettu keila (2+): saat pisteitä kaadettujen keilojen lukumäärän verran (esim. 4 keilaa = 4 pistettä).",
+    rule3Title: "50 pistettä voittoon:",
+    rule3Text: "Ensimmäisenä tasan 50 pistettä saavuttanut pelaaja voittaa pelin!",
+    rule4Title: "Ylimenorangaistus (>50 p):",
+    rule4Text: "Jos pistemäärä ylittää 50, pistemäärä tippuu takaisin 25 pisteeseen.",
+    rule5Title: "3 hutia - pudotus:",
+    rule5Text: "Jos heität 3 kertaa peräkkäin huti (0 keilaa), putoat pelistä.",
+    
     // Footer
     builtWithLove: "Mölkky-pistelaskuri mökille ja pihapeleihin",
 
@@ -119,6 +133,20 @@ export const TRANSLATIONS = {
     molkkySetupTitle: "Mölkky Pin Setup",
     molkkySetupNote: "Official Mölkky throwing distance is 3.5 meters (11.5 feet).",
     
+    // Rules Section
+    rulesTitle: "Mölkky Rules & Scoring",
+    rule1Title: "Setup & Throw:",
+    rule1Text: "Place pins 1–12 in a cluster 3.5 meters from the throwing line. Throw the Mölkky wooden pin underhand.",
+    rule2Title: "Scoring Points:",
+    rule2Item1: "1 pin knocked down: Score the number printed on that pin (1–12 points).",
+    rule2Item2: "Multiple pins (2+): Score the total count of fallen pins (e.g. 4 pins = 4 points).",
+    rule3Title: "50 Points to Win:",
+    rule3Text: "The first player to reach exactly 50 points wins the game!",
+    rule4Title: "Bust Penalty (>50 pts):",
+    rule4Text: "If your total score exceeds 50, your score drops back down to 25 points.",
+    rule5Title: "3 Misses Elimination:",
+    rule5Text: "Missing all pins 3 times in a row results in elimination from the game.",
+    
     // Footer
     builtWithLove: "Mölkky scorekeeper for outdoor games",
 
@@ -211,6 +239,20 @@ export const TRANSLATIONS = {
     // Mölkky Setup / Rules Card
     molkkySetupTitle: "Mölkky uppställning",
     molkkySetupNote: "Officiellt Mölkky kastavstånd är 3,5 meter",
+    
+    // Rules Section
+    rulesTitle: "Mölkky Regler & Poängsättning",
+    rule1Title: "Uppställning & Kast:",
+    rule1Text: "Placera käglorna 1–12 i en klunga 3,5 meter från kastlinjen. Kasta mölkkyn underhandskast.",
+    rule2Title: "Poängräkning:",
+    rule2Item1: "1 fälld kägla: Få poängen som står på käglan (1–12 poäng).",
+    rule2Item2: "Flera fällda käglor (2+): Få poäng motsvarande antalet fällda käglor (t.ex. 4 käglor = 4 poäng).",
+    rule3Title: "50 Poäng för att vinna:",
+    rule3Text: "Den första spelaren som når exakt 50 poäng vinner spelet!",
+    rule4Title: "Överstigning (>50 p):",
+    rule4Text: "Om din totala poäng överstiger 50 faller den tillbaka till 25 poäng.",
+    rule5Title: "3 Missar utslagning:",
+    rule5Text: "Om du missar alla käglor 3 gånger i rad åker du ut ur spelet.",
     
     // Footer
     builtWithLove: "Mölkky poängräknare för stugan och trädgården",

@@ -1282,3 +1282,84 @@ body.in-game #game.screen,
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
     pointer-events: none;
 }
+
+/* Accordion Mölkky Rules Section */
+.rules-card {
+    margin-top: 12px;
+}
+
+.rules-details summary {
+    list-style: none;
+}
+
+.rules-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.rules-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 0;
+}
+
+.rules-summary h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.details-chevron {
+    font-size: 0.85rem;
+    color: var(--muted);
+    transition: transform 0.2s ease;
+}
+
+.rules-details[open] .details-chevron {
+    transform: rotate(180deg);
+}
+
+.rules-content {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--card-border);
+}
+
+.rule-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--text);
+}
+
+.rule-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-text, #11151e);
+    font-weight: 800;
+    font-size: 0.85rem;
+    margin-top: 2px;
+}
+
+.rule-item ul {
+    margin: 6px 0 0 0;
+    padding-left: 18px;
+}
+
+.rule-item li {
+    margin-bottom: 4px;
+}
