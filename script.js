@@ -12,6 +12,8 @@ const playerColors = [
     "#4363d8", "#f58231", "#911eb4", "#46f0f0"
 ];
 
+const LOCAL_STORAGE_KEY = "molkkis_game_state";
+
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("startGameBtn").addEventListener("click", startGame);
     document.getElementById("keypad").addEventListener("click", handleKeypadClick);
@@ -29,7 +31,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const endBtn = document.getElementById("endGameBtn");
     if (endBtn) endBtn.addEventListener("click", endGame);
+
+    loadGameState();
 });
+
+function saveGameState() {
+    if (!gameActive) {
+        clearGameState();
+        return;
+    }
+    const state = {
+        players,
+        currentPlayerIndex,
+        gameActive,
+        winners,
+        nextPlace
+    };
+    try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+    } catch (err) {
+        console.error("Failed to save state to localStorage:", err);
+    }
+}
+
+function clearGameState() {
+    try {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+    } catch (err) {
+        console.error("Failed to clear localStorage:", err);
+    }
+}
+
+function loadGameState() {
+    try {
+        const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (!data) return false;
+        const state = JSON.parse(data);
+        if (!state || !state.gameActive || !Array.isArray(state.players) || state.players.length === 0) {
+            clearGameState();
+            return false;
+        }
+        players = state.players;
+        currentPlayerIndex = state.currentPlayerIndex || 0;
+        gameActive = state.gameActive;
+        winners = state.winners || [];
+        nextPlace = state.nextPlace || 1;
+
+        recalcTotals();
+        initKeypad();
+
+        document.getElementById("setup").style.display = "none";
+        document.getElementById("game").style.display = "block";
+        const footer = document.getElementById("appFooter");
+        if (footer) footer.style.display = "none";
+
+        return true;
+    } catch (err) {
+        console.error("Failed to load state from localStorage:", err);
+        clearGameState();
+        return false;
+    }
+}
 
 function assignPlayerColor(playerIndex) {
     return playerColors[playerIndex % playerColors.length];
@@ -94,7 +156,7 @@ function renumberPlaceholders() {
 }
 
 function startGame(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
 
     const nameInputs = document.querySelectorAll("#playersList input[type='text']");
     players = [];
@@ -112,8 +174,7 @@ function startGame(e) {
         });
     });
 
-    // DO NOT shuffle here: respect chosen order
-    // shuffleArray(players); // removed
+    if (players.length === 0) return;
 
     currentPlayerIndex = 0;
     gameActive = true;
@@ -126,6 +187,8 @@ function startGame(e) {
     document.getElementById("game").style.display = "block";
     const footer = document.getElementById("appFooter");
     if (footer) footer.style.display = "none";
+
+    saveGameState();
 }
 
 function getCurrentRoundIndex() {
@@ -349,6 +412,7 @@ function undoLast() {
     }
 
     recalcTotals();
+    saveGameState();
 }
 
 function initKeypad() {
@@ -381,6 +445,7 @@ function handleKeypadClick(e) {
         players[pi].scores[ri] = value === "X" ? "X" : parseInt(value, 10);
         exitEditMode();
         recalcTotals();
+        saveGameState();
         // editing does NOT change turn or start new round
         return;
     }
@@ -403,6 +468,7 @@ function handleKeypadClick(e) {
 
     recalcTotals(); // updates winners/eliminations and re-renders
     nextTurn();     // advances and maybe starts new round (based on active players)
+    saveGameState();
 }
 
 function enterEditMode(cell) {
@@ -417,6 +483,7 @@ function exitEditMode() {
 }
 
 function showFinalResults() {
+    clearGameState();
     let message = "Game Over!\n\nFinal Results:\n";
     winners
         .sort((a, b) => a.place - b.place)
