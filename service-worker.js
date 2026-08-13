@@ -1,9 +1,9 @@
-const CACHE_NAME = 'scoreboard-cache-v1';
+const CACHE_NAME = 'scoreboard-cache-v2';
 const urlsToCache = [
     './',
     './index.html',
-    './styles.css',
-    './scripts/main.js',
+    './style.css',
+    './script.js',
     './manifest.json'
 ];
 
