@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export const THEMES = [
   {
@@ -40,9 +40,16 @@ export default function SettingsModal({
   onSelectTheme,
   onClearData
 }) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   if (!isOpen) return null;
 
   const activeThemeObj = THEMES.find((t) => t.id === currentTheme) || THEMES[0];
+
+  const handleSelect = (themeId) => {
+    onSelectTheme(themeId);
+    setIsDropdownOpen(false);
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -63,44 +70,79 @@ export default function SettingsModal({
         </div>
 
         <div className="modal-body">
-          {/* Section 1: Theme Dropdown */}
+          {/* Section 1: Custom Styled Theme Dropdown */}
           <h3 className="settings-section-title">Color Theme</h3>
           <p className="settings-subtitle">Select your preferred color scheme:</p>
 
-          <div className="theme-dropdown-wrapper">
-            <select
-              className="theme-select-input"
-              value={currentTheme}
-              onChange={(e) => onSelectTheme(e.target.value)}
-              aria-label="Select color theme"
+          <div className="custom-dropdown-container">
+            <button
+              type="button"
+              className={`custom-dropdown-trigger ${isDropdownOpen ? "open" : ""}`}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              aria-haspopup="listbox"
+              aria-expanded={isDropdownOpen}
             >
-              {THEMES.map((theme) => (
-                <option key={theme.id} value={theme.id}>
-                  {theme.name}
-                </option>
-              ))}
-            </select>
-          </div>
+              <div className="trigger-content">
+                <span className="trigger-title">{activeThemeObj.name}</span>
+                <div className="trigger-swatches">
+                  {activeThemeObj.swatches.map((color, i) => (
+                    <span
+                      key={i}
+                      className="swatch-dot mini"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <svg
+                className={`chevron-icon ${isDropdownOpen ? "open" : ""}`}
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
 
-          {/* Active Theme Preview Card */}
-          {activeThemeObj && (
-            <div className="theme-active-preview-card">
-              <div className="theme-card-header">
-                <span className="theme-name">{activeThemeObj.name}</span>
-                <span className="theme-check-badge">✓ Active Theme</span>
+            {isDropdownOpen && (
+              <div className="custom-dropdown-menu" role="listbox">
+                {THEMES.map((theme) => {
+                  const isSelected = currentTheme === theme.id;
+                  return (
+                    <div
+                      key={theme.id}
+                      className={`custom-dropdown-item ${isSelected ? "selected" : ""}`}
+                      onClick={() => handleSelect(theme.id)}
+                      role="option"
+                      aria-selected={isSelected}
+                    >
+                      <div className="item-info">
+                        <div className="item-header">
+                          <span className="item-name">{theme.name}</span>
+                          {isSelected && <span className="item-check">✓</span>}
+                        </div>
+                        <span className="item-desc">{theme.desc}</span>
+                      </div>
+                      <div className="item-swatches">
+                        {theme.swatches.map((color, i) => (
+                          <span
+                            key={i}
+                            className="swatch-dot mini"
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <span className="theme-desc">{activeThemeObj.desc}</span>
-              <div className="theme-swatches">
-                {activeThemeObj.swatches.map((color, i) => (
-                  <span
-                    key={i}
-                    className="swatch-dot"
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Section 2: Data & Storage Clear Option */}
           <div className="settings-danger-zone">

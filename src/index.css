@@ -944,77 +944,145 @@ body.in-game #game.screen,
     color: var(--muted);
 }
 
-/* Theme Dropdown Selector */
-.theme-dropdown-wrapper {
-    margin-bottom: 12px;
+/* Custom Styled Settings Dropdown */
+.custom-dropdown-container {
+    position: relative;
+    margin-bottom: 14px;
 }
 
-.theme-select-input {
+.custom-dropdown-trigger {
     width: 100%;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--btn-subtle-border);
-    background: var(--btn-subtle);
-    color: var(--text);
-    font-size: 0.95rem;
-    font-weight: 700;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 16px;
-    padding-right: 40px;
-    transition: border-color 0.2s ease;
-}
-
-.theme-select-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
-}
-
-.theme-active-preview-card {
-    background: var(--card);
-    border: 2px solid var(--accent);
-    border-radius: 12px;
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 8px;
-}
-
-.theme-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--btn-subtle);
+    border: 1px solid var(--btn-subtle-border);
+    border-radius: 12px;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.theme-name {
+.custom-dropdown-trigger:hover,
+.custom-dropdown-trigger.open {
+    border-color: var(--accent);
+    background: var(--card);
+}
+
+.trigger-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.trigger-title {
     font-weight: 800;
     font-size: 0.95rem;
+}
+
+.trigger-swatches {
+    display: flex;
+    gap: 4px;
+}
+
+.swatch-dot.mini {
+    width: 12px;
+    height: 12px;
+}
+
+.chevron-icon {
+    transition: transform 0.2s ease;
+    color: var(--muted);
+    flex-shrink: 0;
+}
+
+.chevron-icon.open {
+    transform: rotate(180deg);
+    color: var(--accent);
+}
+
+/* Custom Dropdown Menu List */
+.custom-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background-color: var(--card) !important;
+    opacity: 1 !important;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95);
+    overflow: hidden;
+    max-height: 270px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    gap: 4px;
+    animation: fadeInDropdown 0.15s ease-out;
+}
+
+@keyframes fadeInDropdown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.custom-dropdown-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.custom-dropdown-item:hover {
+    background: var(--btn-subtle);
+}
+
+.custom-dropdown-item.selected {
+    background: var(--btn-subtle);
+    border-color: var(--accent);
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.item-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.item-name {
+    font-weight: 800;
+    font-size: 0.9rem;
     color: var(--text);
 }
 
-.theme-check-badge {
-    font-size: 0.75rem;
+.item-check {
     font-weight: 800;
+    font-size: 0.85rem;
     color: var(--accent);
-    background: rgba(255, 255, 255, 0.08);
-    padding: 2px 8px;
-    border-radius: 999px;
 }
 
-.theme-desc {
-    font-size: 0.78rem;
+.item-desc {
+    font-size: 0.75rem;
     color: var(--muted);
 }
 
-.theme-swatches {
+.item-swatches {
     display: flex;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 4px;
 }
 
 .swatch-dot {
