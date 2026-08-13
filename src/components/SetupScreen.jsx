@@ -244,50 +244,45 @@ export default function SetupScreen({
         </section>
       </div>
 
-      {/* 4. Accordion Mölkky Rules Section */}
+      {/* 4. Mölkky Rules Section (Always open and visible) */}
       <section className="card rules-card">
-        <details className="rules-details">
-          <summary className="rules-summary">
-            <h2>{t("rulesTitle")}</h2>
-            <span className="details-chevron">▼</span>
-          </summary>
-          <div className="rules-content">
-            <div className="rule-item">
-              <span className="rule-number">1</span>
-              <div>
-                <strong>{t("rule1Title")}</strong> {t("rule1Text")}
-              </div>
-            </div>
-            <div className="rule-item">
-              <span className="rule-number">2</span>
-              <div>
-                <strong>{t("rule2Title")}</strong>
-                <ul>
-                  <li>{t("rule2Item1")}</li>
-                  <li>{t("rule2Item2")}</li>
-                </ul>
-              </div>
-            </div>
-            <div className="rule-item">
-              <span className="rule-number">3</span>
-              <div>
-                <strong>{t("rule3Title")}</strong> {t("rule3Text")}
-              </div>
-            </div>
-            <div className="rule-item">
-              <span className="rule-number">4</span>
-              <div>
-                <strong>{t("rule4Title")}</strong> {t("rule4Text")}
-              </div>
-            </div>
-            <div className="rule-item">
-              <span className="rule-number">5</span>
-              <div>
-                <strong>{t("rule5Title")}</strong> {t("rule5Text")}
-              </div>
+        <h2 className="rules-title">{t("rulesTitle")}</h2>
+        <div className="rules-content">
+          <div className="rule-item">
+            <span className="rule-number">1</span>
+            <div>
+              <strong>{t("rule1Title")}</strong> {t("rule1Text")}
             </div>
           </div>
-        </details>
+          <div className="rule-item">
+            <span className="rule-number">2</span>
+            <div>
+              <strong>{t("rule2Title")}</strong>
+              <ul>
+                <li>{t("rule2Item1")}</li>
+                <li>{t("rule2Item2")}</li>
+              </ul>
+            </div>
+          </div>
+          <div className="rule-item">
+            <span className="rule-number">3</span>
+            <div>
+              <strong>{t("rule3Title")}</strong> {t("rule3Text")}
+            </div>
+          </div>
+          <div className="rule-item">
+            <span className="rule-number">4</span>
+            <div>
+              <strong>{t("rule4Title")}</strong> {t("rule4Text")}
+            </div>
+          </div>
+          <div className="rule-item">
+            <span className="rule-number">5</span>
+            <div>
+              <strong>{t("rule5Title")}</strong> {t("rule5Text")}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Color Picker Modal */}
