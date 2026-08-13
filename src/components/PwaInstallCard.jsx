@@ -53,21 +53,37 @@ export default function PwaInstallCard({ showAlert, t }) {
   const getT = (key, fallback) => (t ? t(key) : fallback);
 
   return (
-    <section className="card" id="card-mobile-app">
-      <h2>{getT("appAvailableTitle", "App Available!")}</h2>
-      <div className="div-app-icon">
-        <img src="./icons/icon-192.png" className="img-app-icon" alt="app-image" />
-        <b>Mölkkis</b>
+    <section className="card card-pwa-install" id="card-mobile-app">
+      <div className="pwa-card-header">
+        <h2 className="pwa-card-title">{getT("appAvailableTitle", "App Available!")}</h2>
       </div>
-      <p style={{ margin: "8px 0 12px", textAlign: "center" }}>
-        {getT(
-          "appAvailableText",
-          "On a cottage with bad internet? Install the mobile app for offline use."
-        )}
-      </p>
-      <button id="installPwaBtn" className="btn primary" onClick={triggerPwaInstall}>
-        {getT("installAppBtn", "Install App")}
-      </button>
+
+      <div className="pwa-card-body">
+        <div className="pwa-app-icon-wrapper">
+          <img src="./icons/icon-192.png" className="pwa-app-icon" alt="Mölkkis App Icon" />
+          <span className="pwa-app-label">Mölkkis</span>
+        </div>
+
+        <div className="pwa-app-info">
+          <p className="pwa-app-desc">
+            {getT(
+              "appAvailableText",
+              "On a cottage with bad internet? Install the mobile app for offline use."
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div className="pwa-card-actions">
+        <button id="installPwaBtn" className="btn-install-pwa" onClick={triggerPwaInstall}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span>{getT("installAppBtn", "Install App")}</span>
+        </button>
+      </div>
     </section>
   );
 }
