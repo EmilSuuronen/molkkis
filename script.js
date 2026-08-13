@@ -8,8 +8,14 @@ let nextPlace = 1;
 const MAX_VISIBLE_ROUNDS = 5;
 
 const playerColors = [
-    "#e6194b", "#3cb44b", "#f032e6", "#ffe119",
-    "#4363d8", "#f58231", "#911eb4", "#46f0f0"
+    "#e5c185", // Birch Wood Gold
+    "#d96b53", // Terracotta Clay
+    "#4e9f70", // Forest Moss Green
+    "#4a8fe7", // Fjord Blue
+    "#b873d9", // Heather Violet
+    "#e68a3e", // Warm Amber
+    "#50b4be", // Arctic Teal
+    "#a3b18a"  // Sage Gray-Green
 ];
 
 const LOCAL_STORAGE_KEY = "molkkis_game_state";
@@ -534,9 +540,13 @@ function renderScoreboard() {
         const player = players[currentPlayerIndex];
         if (player && !player.eliminated && !winners.find(w => w.playerIndex === currentPlayerIndex)) {
             const remaining = Math.max(50 - player.total, 0);
+            const pct = Math.min((player.total / 50) * 100, 100);
             cpCard.innerHTML = `
             <h3 style="color:${player.color};">${player.name}'s Turn</h3>
             <p><strong>${remaining}</strong> points to win</p>
+            <div class="turn-progress-track">
+                <div class="turn-progress-fill" style="width: ${pct}%; background-color: ${player.color};"></div>
+            </div>
         `;
             cpCard.style.display = "block";
         } else {
