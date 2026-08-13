@@ -32,12 +32,16 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
 .btn.danger { background: var(--danger); color: white; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Player row setup inputs */
 .players-list { display: grid; gap: 10px; }
-.player-row { display: flex; align-items: center; background: #1d2230; border-radius: 12px; padding: 8px; }
-.player-row input[type="text"] { width: 100%; padding: 10px 12px; margin: 8px; border-radius: 10px; border: 1px solid #2f3542; background: #0f1320; color: var(--text); }
-.order-buttons { display:flex; gap:6px; }
-.order-buttons .btn { padding: 8px 10px; }
-.remove-btn { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 4px 4px; margin: 8px;}
+.player-row { display: flex; align-items: center; gap: 8px; background: #1d2230; border-radius: 12px; padding: 8px 10px; border: 1px solid #2a3142; }
+.player-row input[type="text"] { flex: 1 1 0%; min-width: 0; width: 0; padding: 10px 10px; margin: 0; border-radius: 8px; border: 1px solid #2f3542; background: #0f1320; color: var(--text); font-size: 0.95rem; font-weight: 600; outline: none; }
+.player-row input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(125, 211, 252, 0.25); }
+.order-buttons { display: flex; gap: 4px; flex: 0 0 auto; }
+.order-buttons .btn { width: 34px; height: 34px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: #232a3b; border: 1px solid #374151; color: #a0aec0; font-size: 0.8rem; box-shadow: none; }
+.order-buttons .btn:hover { background: #2f374a; color: #ffffff; }
+.remove-btn { width: 36px; height: 36px; min-width: 36px; flex: 0 0 auto; padding: 0; margin: 0; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.2s; box-shadow: none; }
+.remove-btn:hover { background: #ef4444; color: #ffffff; }
 
 .setup-actions, .start-actions { display:flex; gap: 10px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
 .legend { color: var(--muted); margin-top: 6px; font-size: 13px; text-align:center; }
@@ -171,8 +175,7 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
 #game.screen {
     display: none;
 }
-
-/* In-Game Strict Viewport Locking & Active Game Screen */
+/* In-Game Strict Viewport Locking & Active Game Screen */
 body.in-game {
     height: 100dvh !important;
     max-height: 100dvh !important;
@@ -198,12 +201,13 @@ body.in-game #game.screen,
     max-height: 100dvh;
     width: 100vw;
     max-width: 100vw;
-    padding: 6px;
+    padding: 8px;
     margin: 0 auto;
     box-sizing: border-box;
     overflow: hidden;
     position: absolute;
     inset: 0;
+    gap: 6px;
 }
 
 /* Current Player Status Card at Top */
@@ -213,8 +217,9 @@ body.in-game #game.screen,
     border-radius: 12px;
     padding: 8px 12px;
     text-align: center;
-    margin: 0 0 6px 0;
+    margin: 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .current-player-card h3 {
@@ -236,11 +241,12 @@ body.in-game #game.screen,
     overflow: auto;
     background: var(--card);
     border-radius: 12px;
-    padding: 6px;
-    margin: 0 0 6px 0;
+    padding: 0;
+    margin: 0;
     position: relative;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Score Table Grid Layout */
@@ -250,12 +256,15 @@ body.in-game #game.screen,
     gap: 4px;
     width: max-content;
     min-width: 100%;
+    padding: 0;
 }
 
 .score-row {
     display: flex;
     gap: 4px;
     align-items: center;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 /* Round Number Sticky Left Column */
@@ -264,9 +273,11 @@ body.in-game #game.screen,
 .total-label {
     position: sticky;
     left: 0;
-    z-index: 25;
-    width: 38px;
-    min-width: 38px;
+    z-index: 35;
+    width: 48px;
+    min-width: 48px;
+    margin-right: -4px; /* Cancels row gap so scrolled 1st cell ends flush behind sticky column */
+    box-sizing: border-box;
     text-align: center;
     font-weight: 800;
     font-size: 0.85rem;
@@ -274,7 +285,7 @@ body.in-game #game.screen,
     padding: 6px 0;
     border-right: 2px solid #2f3542;
     color: var(--muted);
-    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.8);
 }
 
 /* Sticky Header Row (Top) */
@@ -283,8 +294,7 @@ body.in-game #game.screen,
     top: 0;
     z-index: 30;
     background-color: #171923 !important;
-    padding-bottom: 6px;
-    padding-top: 2px;
+    padding: 4px 0;
     border-bottom: 2px solid #2f3542;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
@@ -299,10 +309,9 @@ body.in-game #game.screen,
 .score-row.total-row {
     position: sticky;
     bottom: 0;
-    z-index: 25;
+    z-index: 28;
     background-color: #171923 !important;
-    padding-top: 6px;
-    padding-bottom: 2px;
+    padding: 4px 0;
     border-top: 2px solid #2f3542;
     box-shadow: 0 -6px 14px rgba(0, 0, 0, 0.6);
 }
@@ -315,7 +324,7 @@ body.in-game #game.screen,
 
 /* Player Name Column Headers */
 .player-name-header {
-    width: 80px;
+    flex: 1 1 80px;
     min-width: 80px;
     box-sizing: border-box;
     color: #fff;
@@ -338,7 +347,7 @@ body.in-game #game.screen,
 /* Score Cells */
 .score-cell {
     z-index: 1;
-    width: 80px;
+    flex: 1 1 80px;
     min-width: 80px;
     box-sizing: border-box;
     text-align: center;
@@ -366,7 +375,7 @@ body.in-game #game.screen,
 
 /* Total Cells - Solid Opaque Background */
 .total-cell {
-    width: 80px;
+    flex: 1 1 80px;
     min-width: 80px;
     box-sizing: border-box;
     text-align: center;
@@ -404,6 +413,7 @@ body.in-game #game.screen,
     background: var(--card);
     border-radius: 12px;
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     z-index: 50;
 }
 
@@ -440,11 +450,17 @@ body.in-game #game.screen,
     display: flex;
     gap: 8px;
     margin-top: 6px;
+    width: 100%;
 }
 
 .keypad-actions .btn {
+    flex: 1 1 0%;
+    text-align: center;
+    justify-content: center;
     padding: 10px;
     font-size: 14px;
+    font-weight: 700;
+    border-radius: 10px;
 }
 
 /* Modal overlay & dialog */
