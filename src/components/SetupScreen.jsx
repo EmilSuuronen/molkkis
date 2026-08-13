@@ -120,9 +120,7 @@ export default function SetupScreen({
                 onClick={() => setColorPickerIndex(index)}
                 title={t("colorPickerTitle")}
                 aria-label={`Change color for ${player.name || `Player ${index + 1}`}`}
-              >
-                <span className="color-ball-inner-dot" />
-              </button>
+              />
 
               <input
                 ref={(el) => (inputRefs.current[index] = el)}
