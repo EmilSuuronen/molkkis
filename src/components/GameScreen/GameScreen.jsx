@@ -36,6 +36,7 @@ export default function GameScreen({
       <Keypad
         onKeyPress={onKeyPress}
         onUndo={onUndo}
+        isEditing={Boolean(editModeCell)}
       />
     </main>
   );

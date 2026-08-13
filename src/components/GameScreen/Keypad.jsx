@@ -1,11 +1,11 @@
 import React from "react";
 import { UndoIcon } from "../icons/Icons";
 
-export default function Keypad({ onKeyPress, onUndo }) {
+export default function Keypad({ onKeyPress, onUndo, isEditing = false }) {
   const keys = Array.from({ length: 12 }, (_, i) => i + 1);
 
   return (
-    <section className="keypad card">
+    <section className={`keypad card ${isEditing ? "editing-active" : ""}`}>
       <div className="keypad-grid" id="keypad">
         {keys.map((k) => (
           <button

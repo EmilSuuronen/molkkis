@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { getCurrentRoundIndex } from "../../utils/gameLogic";
+import { EditPenIcon } from "../icons/Icons";
 
 export default function Scoreboard({
   players,
@@ -107,7 +108,14 @@ export default function Scoreboard({
                   data-round-index={ri}
                   onClick={() => onCellClick(pi, ri)}
                 >
-                  {player.scores[ri] ?? "-"}
+                  {isEditing ? (
+                    <span className="editing-cell-content">
+                      <span>{player.scores[ri] ?? "-"}</span>
+                      <EditPenIcon size={12} className="edit-pen-icon" />
+                    </span>
+                  ) : (
+                    player.scores[ri] ?? "-"
+                  )}
                 </div>
               );
             })}

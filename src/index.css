@@ -411,6 +411,23 @@ body.in-game #game.screen,
     box-shadow: none;
 }
 
+.editing-cell-content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.edit-pen-icon {
+    margin-left: 1px;
+    animation: penPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes penPulse {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.25); opacity: 1; }
+}
+
 /* Total Cells - Solid Opaque Background */
 .total-cell {
     flex: 1 1 80px;
@@ -455,6 +472,23 @@ body.in-game #game.screen,
     border: none;
     border-top: 1px solid #283040;
     z-index: 50;
+    transition: border-color 0.3s ease;
+}
+
+@keyframes subtleGreenPulse {
+    0%, 100% {
+        border-top-color: rgba(46, 204, 113, 0.4);
+        box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(46, 204, 113, 0.25);
+    }
+    50% {
+        border-top-color: rgba(46, 204, 113, 0.95);
+        box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(46, 204, 113, 0.7);
+    }
+}
+
+.keypad.card.editing-active {
+    animation: subtleGreenPulse 1.8s infinite ease-in-out;
+    border-top: 2px solid #2ecc71 !important;
 }
 
 .keypad-grid {
