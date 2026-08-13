@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import PwaInstallCard from "./PwaInstallCard";
 import ColorPickerModal from "./ColorPickerModal";
+import SavedGamesSection from "./SavedGames/SavedGamesSection";
 
 function LogPin({ number }) {
   const [popped, setPopped] = useState(false);
@@ -10,14 +11,13 @@ function LogPin({ number }) {
     setPopped(true);
     setTimeout(() => {
       setPopped(false);
-    }, 60);
+    }, 120);
   };
 
   return (
     <div
       className={`log ${popped ? "popped" : ""}`}
       onClick={handlePop}
-      onTouchStart={handlePop}
       role="button"
       tabIndex={0}
       aria-label={`Mölkky pin ${number}`}
@@ -35,14 +35,17 @@ export default function SetupScreen({
   onAddPlayer,
   showAlert,
   gameActive,
+  savedGames,
+  onDeleteGame,
+  onResumeGame,
+  onOpenMatrix,
+  currentLanguage,
   t
 }) {
   const inputRefs = useRef([]);
   const [colorPickerIndex, setColorPickerIndex] = useState(null);
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
-
-  if (gameActive) return null;
 
   const handleRemovePlayer = (index) => {
     setSetupPlayers((prev) => prev.filter((_, i) => i !== index));
@@ -68,7 +71,10 @@ export default function SetupScreen({
     }
   };
 
-  // Drag and Drop Handlers
+  const touchDraggedIndexRef = useRef(null);
+  const touchTargetIndexRef = useRef(null);
+
+  // Desktop Drag and Drop Handlers
   const handleDragStart = (e, index) => {
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = "move";
@@ -107,6 +113,54 @@ export default function SetupScreen({
     setDragOverIndex(null);
   };
 
+  // Touch Drag and Drop Handlers for Mobile
+  const handleTouchStart = (e, index) => {
+    touchDraggedIndexRef.current = index;
+    touchTargetIndexRef.current = index;
+    setDraggedIndex(index);
+    setDragOverIndex(index);
+  };
+
+  const handleTouchMove = (e) => {
+    if (touchDraggedIndexRef.current === null) return;
+
+    if (e.cancelable) {
+      e.preventDefault();
+    }
+
+    const touch = e.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!element) return;
+
+    const row = element.closest(".player-row");
+    if (row && row.dataset.index !== undefined) {
+      const targetIndex = parseInt(row.dataset.index, 10);
+      if (!isNaN(targetIndex) && targetIndex !== touchTargetIndexRef.current) {
+        touchTargetIndexRef.current = targetIndex;
+        setDragOverIndex(targetIndex);
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    const fromIndex = touchDraggedIndexRef.current;
+    const toIndex = touchTargetIndexRef.current;
+
+    if (fromIndex !== null && toIndex !== null && fromIndex !== toIndex) {
+      setSetupPlayers((prev) => {
+        const next = [...prev];
+        const [movedItem] = next.splice(fromIndex, 1);
+        next.splice(toIndex, 0, movedItem);
+        return next;
+      });
+    }
+
+    touchDraggedIndexRef.current = null;
+    touchTargetIndexRef.current = null;
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
   const handleKeyDown = (e, index) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -134,6 +188,8 @@ export default function SetupScreen({
     colorPickerIndex !== null && setupPlayers[colorPickerIndex]
       ? setupPlayers[colorPickerIndex]
       : null;
+
+  if (gameActive) return null;
 
   return (
     <main id="setup" className="screen active">
@@ -174,6 +230,7 @@ export default function SetupScreen({
               <div
                 className={`player-row ${isDragging ? "dragging" : ""} ${isDragOver ? "drag-over" : ""}`}
                 key={index}
+                data-index={index}
                 draggable
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragOver={(e) => handleDragOver(e, index)}
@@ -185,6 +242,10 @@ export default function SetupScreen({
                   className="drag-handle"
                   title={t("turnOrderHint")}
                   aria-label="Drag to reorder"
+                  onTouchStart={(e) => handleTouchStart(e, index)}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onTouchCancel={handleTouchEnd}
                 >
                   <svg width="12" height="18" viewBox="0 0 12 18" fill="currentColor">
                     <circle cx="3" cy="3" r="1.5" />
@@ -274,7 +335,17 @@ export default function SetupScreen({
         </div>
       </section>
 
-      {/* 2. Mölkky Rules Section (Wide card on top of side-by-side row) */}
+      {/* 2. Saved Games Section (Placed directly under the Players card) */}
+      <SavedGamesSection
+        savedGames={savedGames}
+        onDeleteGame={onDeleteGame}
+        onResumeGame={onResumeGame}
+        onOpenMatrix={onOpenMatrix}
+        t={t}
+        currentLanguage={currentLanguage}
+      />
+
+      {/* 3. Mölkky Rules Section (Wide card on top of side-by-side row) */}
       <section className="card rules-card">
         <h2 className="rules-title">{t("rulesTitle")}</h2>
         <div className="rules-content">
