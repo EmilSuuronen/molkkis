@@ -1,10 +1,12 @@
-const CACHE_NAME = 'scoreboard-cache-v2';
+const CACHE_NAME = 'scoreboard-cache-v3';
 const urlsToCache = [
     './',
     './index.html',
     './style.css',
     './script.js',
-    './manifest.json'
+    './manifest.json',
+    './icons/icon-192.png',
+    './icons/icon-512.png'
 ];
 
 // Install Service Worker and cache files
