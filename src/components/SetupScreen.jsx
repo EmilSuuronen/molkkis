@@ -1,5 +1,30 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import PwaInstallCard from "./PwaInstallCard";
+
+function LogPin({ number }) {
+  const [popped, setPopped] = useState(false);
+
+  const handlePop = (e) => {
+    e.stopPropagation();
+    setPopped(true);
+    setTimeout(() => {
+      setPopped(false);
+    }, 60);
+  };
+
+  return (
+    <div
+      className={`log ${popped ? "popped" : ""}`}
+      onClick={handlePop}
+      onTouchStart={handlePop}
+      role="button"
+      tabIndex={0}
+      aria-label={`Mölkky pin ${number}`}
+    >
+      {number}
+    </div>
+  );
+}
 
 export default function SetupScreen({
   playerNames,
@@ -172,30 +197,30 @@ export default function SetupScreen({
           <div className="molkky-rows">
             {/* Row 1: 3 logs */}
             <div className="molkky-row">
-              <div className="log">7</div>
-              <div className="log">9</div>
-              <div className="log">8</div>
+              <LogPin number={7} />
+              <LogPin number={9} />
+              <LogPin number={8} />
             </div>
 
             {/* Row 2: 4 logs */}
             <div className="molkky-row">
-              <div className="log">5</div>
-              <div className="log">11</div>
-              <div className="log">12</div>
-              <div className="log">6</div>
+              <LogPin number={5} />
+              <LogPin number={11} />
+              <LogPin number={12} />
+              <LogPin number={6} />
             </div>
 
             {/* Row 3: 3 logs */}
             <div className="molkky-row">
-              <div className="log">3</div>
-              <div className="log">10</div>
-              <div className="log">4</div>
+              <LogPin number={3} />
+              <LogPin number={10} />
+              <LogPin number={4} />
             </div>
 
             {/* Row 4: 2 logs */}
             <div className="molkky-row">
-              <div className="log">1</div>
-              <div className="log">2</div>
+              <LogPin number={1} />
+              <LogPin number={2} />
             </div>
           </div>
 

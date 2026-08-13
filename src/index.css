@@ -88,6 +88,26 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
     box-shadow: 0 3px 0 #b08d50;
     border: 1px solid #f3e0aa;
     user-select: none;
+    cursor: pointer;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    touch-action: manipulation;
+}
+
+/* Hover effect on desktop: slight pop up without transition delay */
+@media (hover: hover) and (pointer: fine) {
+    .log:hover {
+        transform: translateY(-3px) scale(1.08);
+        box-shadow: 0 6px 0 #b08d50;
+        transition: none;
+    }
+}
+
+/* Tap pop animation: pops up instantly when tapped, slowly returns to normal size */
+.log.popped,
+.log:active {
+    transform: translateY(-5px) scale(1.22);
+    box-shadow: 0 8px 0 #b08d50;
+    transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
 }
 
 .molkky-note {
