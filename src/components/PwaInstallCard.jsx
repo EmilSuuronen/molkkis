@@ -5,8 +5,9 @@ export default function PwaInstallCard({ showAlert }) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    // Check standalone mode
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      navigator.standalone;
     if (isStandalone) {
       setVisible(false);
     }
@@ -50,13 +51,17 @@ export default function PwaInstallCard({ showAlert }) {
   };
 
   return (
-    <section className="card pwa-card" id="card-mobile-app">
-      <div className="card-header flex-header">
-        <h2>Install Mobile App</h2>
+    <section className="card" id="card-mobile-app">
+      <h2> App Available! </h2>
+      <div className="div-app-icon">
+        <img src="./icons/icon-192.png" className="img-app-icon" alt="app-image" />
+        <b>Mölkkis</b>
       </div>
-      <p className="pwa-text">Install Mölkkis as a mobile app for fast offline access and fullscreen scorekeeping.</p>
-      <button id="installPwaBtn" className="btn secondary full-width" onClick={triggerPwaInstall}>
-        Add to Home Screen
+      <p style={{ margin: "8px 0 12px", textAlign: "center" }}>
+        Install as a mobile app for quick offline access.
+      </p>
+      <button id="installPwaBtn" className="btn primary" onClick={triggerPwaInstall}>
+        Install App
       </button>
     </section>
   );

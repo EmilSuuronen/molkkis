@@ -5,8 +5,8 @@ export default function Header({ gameActive }) {
 
   return (
     <header className="app-header">
-      <h1 className="logo">Mölkkis</h1>
-      <p className="tagline">Mölkky Scoreboard & Rules</p>
+      <img src="./icons/icon-192.png" className="img-header" alt="Mölkkis icon" />
+      <h1>Mölkkis</h1>
     </header>
   );
 }

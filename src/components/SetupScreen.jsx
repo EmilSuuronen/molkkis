@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import PwaInstallCard from "./PwaInstallCard";
 
 export default function SetupScreen({
@@ -67,7 +67,7 @@ export default function SetupScreen({
   };
 
   const handleStart = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (playerNames.length === 0) {
       showAlert("Please add at least 1 player to start the game.", "No Players");
       return;
@@ -76,23 +76,10 @@ export default function SetupScreen({
   };
 
   return (
-    <main id="setup" className="screen">
-      <PwaInstallCard showAlert={showAlert} />
-
+    <main id="setup" className="screen active">
+      {/* 1. Players Setup Card */}
       <section className="card">
-        <div className="card-header flex-header">
-          <h2>Players</h2>
-          <button
-            type="button"
-            id="randomizeOrderBtn"
-            className="btn ghost small-btn"
-            title="Randomize turn order"
-            onClick={onRandomizeOrder}
-          >
-            🔀 Shuffle
-          </button>
-        </div>
-
+        <h2>Players</h2>
         <div id="playersList" className="players-list">
           {playerNames.map((name, index) => (
             <div className="player-row" key={index}>
@@ -139,70 +126,94 @@ export default function SetupScreen({
           ))}
         </div>
 
-        <div className="button-group horizontal">
+        <div className="setup-actions">
           <button
             type="button"
             id="addPlayerBtn"
-            className="btn secondary"
+            className="btn"
             onClick={() => handleAddPlayer("", true)}
           >
-            + Add Player
+            Add player
           </button>
+          <button
+            type="button"
+            id="randomizeOrderBtn"
+            className="btn ghost"
+            onClick={onRandomizeOrder}
+          >
+            Randomize order
+          </button>
+        </div>
+
+        <div className="legend">
+          <p>Use ▲/▼ to set turn order.</p>
+        </div>
+
+        <div className="start-actions">
           <button
             type="button"
             id="startGameBtn"
             className="btn primary"
             onClick={handleStart}
           >
-            Start Game
+            Start game
           </button>
         </div>
       </section>
 
-      {/* Accordion Mölkky Rules Section */}
-      <section className="card rules-card">
-        <details className="rules-details">
-          <summary className="card-header rules-summary">
-            <h2>Mölkky Rules & Scoring</h2>
-            <span className="details-chevron">▼</span>
-          </summary>
-          <div className="rules-content">
-            <div className="rule-item">
-              <span className="rule-number">1</span>
-              <div>
-                <strong>Setup & Throw:</strong> Place pins 1–12 in a cluster 3–4 meters from the throwing line. Throw the Mölkky wooden pin underhand.
-              </div>
+      {/* 2. PWA Install Card */}
+      <PwaInstallCard showAlert={showAlert} />
+
+      {/* 3. Mölkky Setup Pin Diagram Card */}
+      <div className="card">
+        <section className="molkky-board">
+          <h3 className="molkky-title">Mölkky Setup</h3>
+
+          <div className="molkky-rows">
+            {/* Row 1: 3 logs */}
+            <div className="molkky-row">
+              <div className="log">7</div>
+              <div className="log">9</div>
+              <div className="log">8</div>
             </div>
-            <div className="rule-item">
-              <span className="rule-number">2</span>
-              <div>
-                <strong>Scoring Points:</strong>
-                <ul>
-                  <li><strong>1 pin knocked down:</strong> Score the number printed on that pin (1–12 points).</li>
-                  <li><strong>Multiple pins (2+):</strong> Score the total count of fallen pins (e.g. 4 pins = 4 points).</li>
-                </ul>
-              </div>
+
+            {/* Row 2: 4 logs */}
+            <div className="molkky-row">
+              <div className="log">5</div>
+              <div className="log">11</div>
+              <div className="log">12</div>
+              <div className="log">6</div>
             </div>
-            <div className="rule-item">
-              <span className="rule-number">3</span>
-              <div>
-                <strong>50 Points to Win:</strong> The first player to reach <em>exactly 50 points</em> wins!
-              </div>
+
+            {/* Row 3: 3 logs */}
+            <div className="molkky-row">
+              <div className="log">3</div>
+              <div className="log">10</div>
+              <div className="log">4</div>
             </div>
-            <div className="rule-item">
-              <span className="rule-number">4</span>
-              <div>
-                <strong>Bust Penalty (&gt;50 pts):</strong> If your total exceeds 50, your score drops back down to <strong>25 points</strong>.
-              </div>
-            </div>
-            <div className="rule-item">
-              <span className="rule-number">5</span>
-              <div>
-                <strong>3 Misses Elimination:</strong> Missing all pins 3 times in a row ("X") results in elimination from the game.
-              </div>
+
+            {/* Row 4: 2 logs */}
+            <div className="molkky-row">
+              <div className="log">1</div>
+              <div className="log">2</div>
             </div>
           </div>
-        </details>
+
+          <p className="molkky-note">Throwing distance should be 3,5 meters</p>
+        </section>
+      </div>
+
+      {/* 4. Rules Card */}
+      <section className="card">
+        <h3>Rules:</h3>
+        <ul className="list-rules">
+          <li>First thrower to exact 50 points wins</li>
+          <li>Single log thrown over will give score written on it</li>
+          <li>Multiple logs thrown over will give sum of logs that fell over</li>
+          <li>Fallen logs leaning on others will not be counted in scoring</li>
+          <li>A throw resulting in score over 50 will return the players score to 25</li>
+          <li>3 X misses in a row results in player being outed from the game</li>
+        </ul>
       </section>
     </main>
   );
