@@ -526,14 +526,24 @@ body.in-game #game.screen,
 .keypad-actions .btn {
     flex: 1 1 0%;
     text-align: center;
-    justify-content: center;
     padding: 10px;
     font-size: 14px;
     font-weight: 700;
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Modal Overlay System */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
