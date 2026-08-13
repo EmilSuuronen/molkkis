@@ -513,9 +513,15 @@ function renderScoreboard() {
     totalLabel.textContent = "Total";
     totalRow.appendChild(totalLabel);
 
-    players.forEach(p => {
+    players.forEach((p, pi) => {
         const totalCell = document.createElement("div");
         totalCell.className = "total-cell";
+        if (pi === currentPlayerIndex && !p.eliminated && !winners.find(w => w.playerIndex === pi)) {
+            totalCell.classList.add("active-total");
+        }
+        if (p.eliminated) {
+            totalCell.classList.add("eliminated");
+        }
         totalCell.textContent = p.total;
         totalRow.appendChild(totalCell);
     });

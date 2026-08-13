@@ -281,14 +281,17 @@ body.in-game #game.screen,
 .score-row.header-row {
     position: sticky;
     top: 0;
-    z-index: 20;
-    background-color: #171923;
-    padding-bottom: 4px;
+    z-index: 30;
+    background-color: #171923 !important;
+    padding-bottom: 6px;
+    padding-top: 2px;
+    border-bottom: 2px solid #2f3542;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Intersection of Sticky Top Header and Sticky Left Column */
 .score-row.header-row .round-header {
-    z-index: 40 !important;
+    z-index: 50 !important;
     background-color: #171923 !important;
 }
 
@@ -296,15 +299,17 @@ body.in-game #game.screen,
 .score-row.total-row {
     position: sticky;
     bottom: 0;
-    z-index: 15;
-    background-color: #171923;
-    padding-top: 4px;
+    z-index: 25;
+    background-color: #171923 !important;
+    padding-top: 6px;
+    padding-bottom: 2px;
     border-top: 2px solid #2f3542;
+    box-shadow: 0 -6px 14px rgba(0, 0, 0, 0.6);
 }
 
 /* Intersection of Sticky Bottom Total and Sticky Left Column */
 .score-row.total-row .total-label {
-    z-index: 35 !important;
+    z-index: 45 !important;
     background-color: #171923 !important;
 }
 
@@ -359,7 +364,7 @@ body.in-game #game.screen,
     color: #fff !important;
 }
 
-/* Total Cells */
+/* Total Cells - Solid Opaque Background */
 .total-cell {
     width: 80px;
     min-width: 80px;
@@ -367,17 +372,28 @@ body.in-game #game.screen,
     text-align: center;
     padding: 8px 0;
     border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #232a3b !important;
+    border: 1px solid #374151;
     font-weight: 800;
-    font-size: 1rem;
-    color: #fff;
+    font-size: 1.05rem;
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.total-cell.active-total {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    border-color: #60a5fa !important;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
 }
 
 /* Eliminated players */
 .player-name-header.eliminated,
-.score-cell.eliminated {
-    background-color: #3a3f4d !important;
-    color: #8a919e !important;
+.score-cell.eliminated,
+.total-cell.eliminated {
+    background-color: #2a2e39 !important;
+    color: #6b7280 !important;
+    border-color: #1f2937 !important;
 }
 
 /* Bottom Fixed Keypad Card */
