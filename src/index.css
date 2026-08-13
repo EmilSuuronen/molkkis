@@ -1014,3 +1014,33 @@ body.in-game #game.screen,
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
+
+.settings-danger-zone {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--card-border);
+}
+
+.danger-title {
+    color: #f07373;
+}
+
+.btn-clear-data {
+    width: 100%;
+    margin-top: 6px;
+    background: rgba(217, 83, 79, 0.12);
+    border: 1px solid rgba(217, 83, 79, 0.4);
+    color: #f07373;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-clear-data:hover {
+    background: var(--danger);
+    color: #ffffff;
+    border-color: var(--danger);
+}

@@ -33,7 +33,13 @@ export const THEMES = [
   }
 ];
 
-export default function SettingsModal({ isOpen, onClose, currentTheme, onSelectTheme }) {
+export default function SettingsModal({
+  isOpen,
+  onClose,
+  currentTheme,
+  onSelectTheme,
+  onClearData
+}) {
   if (!isOpen) return null;
 
   return (
@@ -55,6 +61,7 @@ export default function SettingsModal({ isOpen, onClose, currentTheme, onSelectT
         </div>
 
         <div className="modal-body">
+          {/* Section 1: Color Themes */}
           <h3 className="settings-section-title">Color Theme</h3>
           <p className="settings-subtitle">Select your preferred color scheme:</p>
 
@@ -84,6 +91,19 @@ export default function SettingsModal({ isOpen, onClose, currentTheme, onSelectT
                 </div>
               );
             })}
+          </div>
+
+          {/* Section 2: Data & Storage Clear Option */}
+          <div className="settings-danger-zone">
+            <h3 className="settings-section-title danger-title">Data & Storage</h3>
+            <p className="settings-subtitle">Clear all local storage and cached memory:</p>
+            <button
+              type="button"
+              className="btn btn-clear-data"
+              onClick={onClearData}
+            >
+              Clear Storage & Cache
+            </button>
           </div>
         </div>
 

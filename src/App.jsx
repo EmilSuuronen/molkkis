@@ -320,6 +320,36 @@ export default function App() {
     setGameActive(false);
   };
 
+  const handleClearData = async () => {
+    setIsSettingsOpen(false);
+    const confirmed = await showConfirm(
+      "This deletes all games and settings: are you sure you want to proceed?",
+      "Clear Storage & Cache"
+    );
+
+    if (!confirmed) {
+      setIsSettingsOpen(true);
+      return;
+    }
+
+    try {
+      localStorage.clear();
+    } catch (err) {
+      console.error("Failed to clear localStorage:", err);
+    }
+
+    if ("caches" in window) {
+      try {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((key) => caches.delete(key)));
+      } catch (err) {
+        console.error("Failed to clear CacheStorage:", err);
+      }
+    }
+
+    window.location.reload();
+  };
+
   return (
     <div id="appRoot">
       <Header
@@ -352,6 +382,7 @@ export default function App() {
         onClose={() => setIsSettingsOpen(false)}
         currentTheme={currentTheme}
         onSelectTheme={setCurrentTheme}
+        onClearData={handleClearData}
       />
     </div>
   );
