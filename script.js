@@ -13,6 +13,18 @@ const playerColors = [
 ];
 
 const LOCAL_STORAGE_KEY = "molkkis_game_state";
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+window.addEventListener("appinstalled", () => {
+    deferredPrompt = null;
+    const card = document.getElementById("card-mobile-app");
+    if (card) card.style.display = "none";
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("startGameBtn").addEventListener("click", startGame);
@@ -32,8 +44,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const endBtn = document.getElementById("endGameBtn");
     if (endBtn) endBtn.addEventListener("click", endGame);
 
+    const installPwaBtn = document.getElementById("installPwaBtn");
+    if (installPwaBtn) {
+        installPwaBtn.addEventListener("click", triggerPwaInstall);
+    }
+
+    // Hide app card if running as installed standalone PWA
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+    if (isStandalone) {
+        const card = document.getElementById("card-mobile-app");
+        if (card) card.style.display = "none";
+    }
+
     loadGameState();
 });
+
+function triggerPwaInstall() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === "accepted") {
+                const card = document.getElementById("card-mobile-app");
+                if (card) card.style.display = "none";
+            }
+            deferredPrompt = null;
+        });
+    } else {
+        alert("To install Mölkkis:\n\n• iOS (Safari): Tap the Share icon and select 'Add to Home Screen'.\n• Android / Chrome: Tap the menu (⋮) and select 'Install app' or 'Add to Home Screen'.");
+    }
+}
 
 function saveGameState() {
     if (!gameActive) {
