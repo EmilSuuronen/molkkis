@@ -105,7 +105,32 @@ export const TRANSLATIONS = {
     languageModalSubtitle: "Valitse sovelluksen kieli:",
     langFi: "Suomi",
     langEn: "English",
-    langSv: "Svenska"
+    langSv: "Svenska",
+
+    // Saved Games
+    savedGamesTitle: "Aiemmat pelit",
+    latestGame: "Viimeisin peli",
+    noGamesTitle: "Ei vielä pelejä",
+    noGamesText: "Pelaa ensimmäinen pelisi ja tulokset tallentuvat tänne automaattisesti.",
+    viewScoreboard: "Avaa tulostaulukko",
+    statusFinished: "Päättynyt",
+    statusCancelled: "Keskeytetty",
+    winnerLabel: "Voittaja: {name}",
+    noWinnerLabel: "Ei voittajaa (Keskeytetty)",
+    showAllGames: "Näytä kaikki ({count})",
+    showFewerGames: "Näytä vähemmän",
+    deleteGameTitle: "Poista peli",
+    deleteGameConfirmMessage: "Haluatko varmasti poistaa tämän pelin muistista?",
+    deleteGameBtn: "Poista peli",
+    resumeGame: "Jatka peliä",
+    resumeConfirmTitle: "Jatketaanko peliä?",
+    resumeConfirmMessage: "Haluatko jatkaa tätä keskeytettyä peliä?",
+    exitGameModalTitle: "Lopetetaanko peli?",
+    exitGameModalMessage: "Haluatko tallentaa pelin aiempiin peleihin myöhempää jatkamista varten vai hylätä sen kokonaan?",
+    saveAndExitBtn: "Tallenna ja lopeta",
+    discardGameBtn: "Hylkää peli",
+    savedGameMatrixTitle: "Pelin tulostaulukko",
+    playedAt: "Pelattu: {date}"
   },
 
   en: {
@@ -212,7 +237,32 @@ export const TRANSLATIONS = {
     languageModalSubtitle: "Choose your preferred application language:",
     langFi: "Suomi",
     langEn: "English",
-    langSv: "Svenska"
+    langSv: "Svenska",
+
+    // Saved Games
+    savedGamesTitle: "Saved Games",
+    latestGame: "Latest Game",
+    noGamesTitle: "No Games Yet",
+    noGamesText: "Play your first game and scores will automatically be saved here.",
+    viewScoreboard: "View Scoreboard",
+    statusFinished: "Finished",
+    statusCancelled: "Cancelled",
+    winnerLabel: "Winner: {name}",
+    noWinnerLabel: "No winner (Cancelled)",
+    showAllGames: "Show all ({count})",
+    showFewerGames: "Show less",
+    deleteGameTitle: "Delete Game",
+    deleteGameConfirmMessage: "Are you sure you want to delete this game from memory?",
+    deleteGameBtn: "Delete Game",
+    resumeGame: "Resume Game",
+    resumeConfirmTitle: "Resume Game?",
+    resumeConfirmMessage: "Do you want to resume this cancelled game?",
+    exitGameModalTitle: "Exit Game?",
+    exitGameModalMessage: "Do you want to save the game to resume later, or discard it completely?",
+    saveAndExitBtn: "Save & Exit",
+    discardGameBtn: "Discard Game",
+    savedGameMatrixTitle: "Game Scoreboard",
+    playedAt: "Played: {date}"
   },
 
   sv: {
@@ -319,7 +369,32 @@ export const TRANSLATIONS = {
     languageModalSubtitle: "Välj språk för applikationen:",
     langFi: "Suomi",
     langEn: "English",
-    langSv: "Svenska"
+    langSv: "Svenska",
+
+    // Saved Games
+    savedGamesTitle: "Sparade spel",
+    latestGame: "Senaste spelet",
+    noGamesTitle: "Inga spel ännu",
+    noGamesText: "Spela ditt första spel så sparas resultaten här automatiskt.",
+    viewScoreboard: "Öppna poängtabell",
+    statusFinished: "Avslutad",
+    statusCancelled: "Avbruten",
+    winnerLabel: "Vinnare: {name}",
+    noWinnerLabel: "Ingen vinnare (Avbruten)",
+    showAllGames: "Visa alla ({count})",
+    showFewerGames: "Visa färre",
+    deleteGameTitle: "Radera spel",
+    deleteGameConfirmMessage: "Är du säker på att du vill radera detta spel från minnet?",
+    deleteGameBtn: "Radera spel",
+    resumeGame: "Återuppta spel",
+    resumeConfirmTitle: "Återuppta spel?",
+    resumeConfirmMessage: "Vill du återuppta detta avbrutna spel?",
+    exitGameModalTitle: "Avsluta spel?",
+    exitGameModalMessage: "Vill du spara spelet för att återuppta senare, eller kasta bort det helt?",
+    saveAndExitBtn: "Spara och avsluta",
+    discardGameBtn: "Kasta bort spel",
+    savedGameMatrixTitle: "Spelets poängtabell",
+    playedAt: "Spelades: {date}"
   }
 };
 

@@ -18,6 +18,7 @@ export const PLAYER_COLORS = [
 ];
 
 export const LOCAL_STORAGE_KEY = "molkkis_game_state";
+export const SAVED_GAMES_STORAGE_KEY = "molkkis_saved_games";
 export const MAX_VISIBLE_ROUNDS = 5;
 
 // Pick a random color from the 16 available colors
