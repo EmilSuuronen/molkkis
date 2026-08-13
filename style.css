@@ -167,7 +167,12 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
     gap: 5px;
 }
 
-/* In-Game Strict Viewport Locking */
+/* Default hidden state for game screen */
+#game.screen {
+    display: none;
+}
+
+/* In-Game Strict Viewport Locking & Active Game Screen */
 body.in-game {
     height: 100dvh !important;
     max-height: 100dvh !important;
@@ -185,9 +190,9 @@ body.in-game #appFooter {
     display: none !important;
 }
 
-/* Fixed Viewport Game Screen */
-#game.screen {
-    display: flex;
+body.in-game #game.screen,
+#game.screen.active {
+    display: flex !important;
     flex-direction: column;
     height: 100dvh;
     max-height: 100dvh;

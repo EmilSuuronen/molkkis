@@ -56,9 +56,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const stateLoaded = loadGameState();
-    if (!stateLoaded && playersListEl && playersListEl.children.length === 0) {
-        addPlayerRow();
-        addPlayerRow();
+    if (!stateLoaded) {
+        setGameViewActive(false);
+        if (playersListEl && playersListEl.children.length === 0) {
+            addPlayerRow();
+            addPlayerRow();
+        }
     }
 });
 
