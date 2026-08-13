@@ -33,10 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const addPlayerBtn = document.getElementById("addPlayerBtn");
     const playersListEl = document.getElementById("playersList");
-    addPlayerBtn.addEventListener("click", () => {
-        if (playersListEl.children.length >= 8) return;
-        addPlayerRow();
-    });
+    if (addPlayerBtn) {
+        addPlayerBtn.addEventListener("click", () => addPlayerRow("", true));
+    }
 
     const randomizeBtn = document.getElementById("randomizeOrderBtn");
     if (randomizeBtn) randomizeBtn.addEventListener("click", randomizeOrder);
@@ -242,18 +241,37 @@ function randomizeOrder() {
     renumberPlaceholders();
 }
 
-function addPlayerRow(name = "") {
+function addPlayerRow(name = "", shouldFocus = false) {
     const playersListEl = document.getElementById("playersList");
     const row = document.createElement("div");
     row.className = "player-row";
     row.innerHTML = `
-    <input type="text" placeholder="Name" value="${name}" aria-label="Player name" maxlength="8"/>
+    <input type="text" placeholder="Name" value="${name}" aria-label="Player name" maxlength="12" enterkeyhint="next"/>
     <div class="order-buttons">
       <button class="btn" data-dir="up" title="Move up">▲</button>
       <button class="btn" data-dir="down" title="Move down">▼</button>
     </div>
     <button class="btn remove-btn" title="Remove">✖</button>
   `;
+
+    const input = row.querySelector("input[type='text']");
+
+    // Press Enter to go to next field or create new row automatically
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const allInputs = [...document.querySelectorAll("#playersList input[type='text']")];
+            const currentIdx = allInputs.indexOf(input);
+            if (currentIdx === allInputs.length - 1) {
+                // Last input -> create new row and focus it!
+                addPlayerRow("", true);
+            } else if (currentIdx >= 0 && currentIdx < allInputs.length - 1) {
+                // Not last -> focus next input
+                allInputs[currentIdx + 1].focus();
+                allInputs[currentIdx + 1].select();
+            }
+        }
+    });
 
     // Move up/down
     row.querySelectorAll(".order-buttons .btn").forEach(btn => {
@@ -275,6 +293,14 @@ function addPlayerRow(name = "") {
 
     playersListEl.appendChild(row);
     renumberPlaceholders();
+
+    if (shouldFocus) {
+        requestAnimationFrame(() => {
+            input.focus();
+            input.select();
+            row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+    }
 }
 
 function renumberPlaceholders() {
