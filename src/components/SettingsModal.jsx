@@ -3,15 +3,15 @@ import React from "react";
 export const THEMES = [
   {
     id: "default",
-    name: "Default",
-    desc: "Pine Teal, Sea Green & Dry Sage",
-    swatches: ["#121619", "#2d4739", "#09814a", "#bcb382", "#e5c687"]
+    name: "Default (Legacy Blue)",
+    desc: "Midnight Slate with Vibrant Blue (#3877d3)",
+    swatches: ["#0d1117", "#161b22", "#3877d3", "#2563eb", "#60a5fa"]
   },
   {
-    id: "legacy",
-    name: "Legacy",
-    desc: "Electric Neon & Midnight Blue",
-    swatches: ["#0d1117", "#161b22", "#00f0ff", "#7928ca", "#00ff88"]
+    id: "forest",
+    name: "Forest Green",
+    desc: "Pine Teal, Sea Green & Dry Sage",
+    swatches: ["#121619", "#2d4739", "#09814a", "#bcb382", "#e5c687"]
   },
   {
     id: "kawai",
@@ -42,6 +42,8 @@ export default function SettingsModal({
 }) {
   if (!isOpen) return null;
 
+  const activeThemeObj = THEMES.find((t) => t.id === currentTheme) || THEMES[0];
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div
@@ -61,37 +63,44 @@ export default function SettingsModal({
         </div>
 
         <div className="modal-body">
-          {/* Section 1: Color Themes */}
+          {/* Section 1: Theme Dropdown */}
           <h3 className="settings-section-title">Color Theme</h3>
           <p className="settings-subtitle">Select your preferred color scheme:</p>
 
-          <div className="theme-grid">
-            {THEMES.map((theme) => {
-              const isSelected = currentTheme === theme.id;
-              return (
-                <div
-                  key={theme.id}
-                  className={`theme-card ${isSelected ? "selected" : ""}`}
-                  onClick={() => onSelectTheme(theme.id)}
-                >
-                  <div className="theme-card-header">
-                    <span className="theme-name">{theme.name}</span>
-                    {isSelected && <span className="theme-check-badge">✓ Active</span>}
-                  </div>
-                  <span className="theme-desc">{theme.desc}</span>
-                  <div className="theme-swatches">
-                    {theme.swatches.map((color, i) => (
-                      <span
-                        key={i}
-                        className="swatch-dot"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+          <div className="theme-dropdown-wrapper">
+            <select
+              className="theme-select-input"
+              value={currentTheme}
+              onChange={(e) => onSelectTheme(e.target.value)}
+              aria-label="Select color theme"
+            >
+              {THEMES.map((theme) => (
+                <option key={theme.id} value={theme.id}>
+                  {theme.name}
+                </option>
+              ))}
+            </select>
           </div>
+
+          {/* Active Theme Preview Card */}
+          {activeThemeObj && (
+            <div className="theme-active-preview-card">
+              <div className="theme-card-header">
+                <span className="theme-name">{activeThemeObj.name}</span>
+                <span className="theme-check-badge">✓ Active Theme</span>
+              </div>
+              <span className="theme-desc">{activeThemeObj.desc}</span>
+              <div className="theme-swatches">
+                {activeThemeObj.swatches.map((color, i) => (
+                  <span
+                    key={i}
+                    className="swatch-dot"
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Section 2: Data & Storage Clear Option */}
           <div className="settings-danger-zone">

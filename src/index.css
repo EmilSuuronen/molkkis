@@ -2,8 +2,35 @@
    MÖLKKIS DESIGN SYSTEM & THEMES
    ========================================================================== */
 
-/* Theme 1: Default (Pine Teal, Sea Green & Dry Sage) */
-:root, [data-theme="default"] {
+/* Theme 1: Default (Legacy Blue with #3877d3) */
+:root, [data-theme="default"], [data-theme="legacy"] {
+    --bg: #0d1117;
+    --card: #161b22;
+    --card-border: #21262d;
+    --text: #f0f6fc;
+    --muted: #8b949e;
+    --accent: #3877d3; /* Requested Vibrant Blue */
+    --accent-hover: #4a88e4;
+    --accent-text: #ffffff;
+    --secondary-accent: #2563eb;
+    --highlight: #3877d3;
+    --danger: #d9534f;
+    --good: #3877d3;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+    --radius: 14px;
+    --key-bg: #121720;
+    --key-border: #1f2937;
+    --key-border-top: #374151;
+    --key-shadow: #080c12;
+    --key-active: #3877d3;
+    --key-active-text: #ffffff;
+    --btn-subtle: #1c2330;
+    --btn-subtle-border: #2d3748;
+    --row-bg: #111620;
+}
+
+/* Theme 2: Forest Green (Renamed from default) */
+[data-theme="forest"] {
     --bg: #121619;
     --card: #1c2620;
     --card-border: #2d4739;
@@ -27,33 +54,6 @@
     --btn-subtle: #24352b;
     --btn-subtle-border: #2d4739;
     --row-bg: #151d18;
-}
-
-/* Theme 2: Legacy (Electric Cyber Neon & Midnight Blue) */
-[data-theme="legacy"] {
-    --bg: #0d1117;
-    --card: #161b22;
-    --card-border: #21262d;
-    --text: #f0f6fc;
-    --muted: #8b949e;
-    --accent: #00f0ff; /* Electric Neon Cyan */
-    --accent-hover: #33f3ff;
-    --accent-text: #0a1117;
-    --secondary-accent: #7928ca; /* Neon Violet */
-    --highlight: #00ff88; /* Neon Lime */
-    --danger: #ff0055;
-    --good: #00ff88;
-    --shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
-    --radius: 14px;
-    --key-bg: #121720;
-    --key-border: #1f2937;
-    --key-border-top: #374151;
-    --key-shadow: #080c12;
-    --key-active: #00f0ff;
-    --key-active-text: #0d1117;
-    --btn-subtle: #1c2330;
-    --btn-subtle-border: #2d3748;
-    --row-bg: #111620;
 }
 
 /* Theme 3: Kawai (Pastel Pink, Rose & Lavender) */
@@ -164,11 +164,11 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
     margin-bottom: 6px;
 }
 
-/* Top-Left Header Settings Button */
+/* Top-Right Header Settings Button */
 .btn-settings-header {
     position: absolute;
     top: 12px;
-    left: 16px;
+    right: 16px; /* Moved to Top-Right */
     appearance: none;
     border: 1px solid var(--btn-subtle-border);
     background: var(--btn-subtle);
@@ -331,7 +331,7 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
 .img-app-icon { border-radius: 12px; width: 48px; height: 48px; object-fit: cover; }
 .div-app-icon { display: flex; flex-direction: column; justify-content: center; align-items: center; }
 
-/* Mölkky instruction board */
+/* Mölkky instruction board - Always Authentic Birch Wood Colors */
 .molkky-board {
     display: flex;
     flex-direction: column;
@@ -361,16 +361,16 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background-color: var(--secondary-accent);
-    color: var(--key-active-text);
+    background-color: #dcb072 !important; /* Authentic birch wood */
+    color: #2c1e0e !important;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
     font-size: 0.95rem;
     font-variant-numeric: tabular-nums;
-    box-shadow: 0 3px 0 var(--key-shadow);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 3px 0 #9c7546 !important; /* Darker wood bottom 3D border */
+    border: 1px solid #f0cd94 !important;
     user-select: none;
     cursor: pointer;
     transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -380,7 +380,7 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
 @media (hover: hover) and (pointer: fine) {
     .log:hover {
         transform: translateY(-3px) scale(1.08);
-        box-shadow: 0 6px 0 var(--key-shadow);
+        box-shadow: 0 6px 0 #9c7546 !important;
         transition: none;
     }
 }
@@ -388,7 +388,7 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
 .log.popped,
 .log:active {
     transform: translateY(-5px) scale(1.22);
-    box-shadow: 0 8px 0 var(--key-shadow);
+    box-shadow: 0 8px 0 #9c7546 !important;
     transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
 }
 
@@ -925,7 +925,7 @@ body.in-game #game.screen,
     justify-content: flex-end;
 }
 
-/* Settings Modal & Theme Selection Grid */
+/* Settings Modal & Theme Selection Dropdown */
 .settings-modal-card {
     max-width: 440px;
     width: 92vw;
@@ -939,40 +939,50 @@ body.in-game #game.screen,
 }
 
 .settings-subtitle {
-    margin: 0 0 14px 0;
+    margin: 0 0 12px 0;
     font-size: 0.85rem;
     color: var(--muted);
 }
 
-.theme-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-height: 52vh;
-    overflow-y: auto;
-    padding-right: 4px;
+/* Theme Dropdown Selector */
+.theme-dropdown-wrapper {
+    margin-bottom: 12px;
 }
 
-.theme-card {
-    background: var(--btn-subtle);
+.theme-select-input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
     border: 1px solid var(--btn-subtle-border);
+    background: var(--btn-subtle);
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 700;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px;
+    transition: border-color 0.2s ease;
+}
+
+.theme-select-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+}
+
+.theme-active-preview-card {
+    background: var(--card);
+    border: 2px solid var(--accent);
     border-radius: 12px;
     padding: 12px 14px;
-    cursor: pointer;
-    transition: all 0.15s ease;
     display: flex;
     flex-direction: column;
     gap: 4px;
-}
-
-.theme-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-1px);
-}
-
-.theme-card.selected {
-    border: 2px solid var(--accent);
-    background: var(--card);
+    margin-bottom: 8px;
 }
 
 .theme-card-header {
