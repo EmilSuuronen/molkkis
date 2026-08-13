@@ -91,7 +91,7 @@ export default function App() {
   }, [gameActive]);
 
   // Alert and Confirm helper promise wrappers
-  const showAlert = (message, title = "Notification") => {
+  const showAlert = (message, title = "Notification", preventBackdropClose = true) => {
     return new Promise((resolve) => {
       setModal({
         open: true,
@@ -99,6 +99,7 @@ export default function App() {
         message,
         confirmText: "OK",
         showCancel: false,
+        preventBackdropClose,
         onConfirm: () => {
           setModal({ open: false });
           resolve(true);

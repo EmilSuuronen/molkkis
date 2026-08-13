@@ -58,7 +58,7 @@ export default function PwaInstallCard({ showAlert }) {
         <b>Mölkkis</b>
       </div>
       <p style={{ margin: "8px 0 12px", textAlign: "center" }}>
-        Install as a mobile app for quick offline access.
+        On a cottage with bad internet? Install the mobile app for offline use.
       </p>
       <button id="installPwaBtn" className="btn primary" onClick={triggerPwaInstall}>
         Install App

@@ -3,7 +3,17 @@ import React, { useEffect, useRef } from "react";
 export default function ModalDialog({ modal, onClose }) {
   if (!modal || !modal.open) return null;
 
-  const { title = "Notice", message = "", confirmText = "OK", cancelText = "Cancel", showCancel = false, onConfirm, onCancel } = modal;
+  const {
+    title = "Notice",
+    message = "",
+    confirmText = "OK",
+    cancelText = "Cancel",
+    showCancel = false,
+    preventBackdropClose = false,
+    onConfirm,
+    onCancel
+  } = modal;
+
   const confirmBtnRef = useRef(null);
 
   useEffect(() => {
@@ -11,6 +21,7 @@ export default function ModalDialog({ modal, onClose }) {
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
+        if (preventBackdropClose) return;
         if (onCancel) onCancel();
         else onClose();
       }
@@ -22,10 +33,11 @@ export default function ModalDialog({ modal, onClose }) {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onConfirm, onCancel, onClose]);
+  }, [onConfirm, onCancel, onClose, preventBackdropClose]);
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
+      if (preventBackdropClose) return;
       if (onCancel) onCancel();
       else onClose();
     }
