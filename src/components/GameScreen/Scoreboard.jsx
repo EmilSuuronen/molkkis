@@ -8,13 +8,16 @@ export default function Scoreboard({
   winners,
   editModeCell,
   onCellClick,
-  gameActive
+  gameActive,
+  t
 }) {
   const scrollContainerRef = useRef(null);
   const activeTurnCellRef = useRef(null);
 
   const numRounds = Math.max(...players.map((p) => p.scores.length), 0);
   const activeRound = getCurrentRoundIndex(players);
+
+  const getT = (key, params, fallback) => (t ? t(key, params) : fallback);
 
   useEffect(() => {
     if (activeTurnCellRef.current && scrollContainerRef.current) {
@@ -49,14 +52,18 @@ export default function Scoreboard({
       <div id="scoreTable">
         {/* Header Row */}
         <div className="score-row header-row">
-          <div className="round-header">#</div>
+          <div className="round-header">{getT("roundHeader", {}, "#")}</div>
           {players.map((p, idx) => {
             const isActive =
               idx === currentPlayerIndex &&
               !p.eliminated &&
               !winners.some((w) => w.playerIndex === idx);
             const w = winners.find((w) => w.playerIndex === idx);
-            const suffix = p.eliminated ? " (Out)" : w ? ` (${w.place}.)` : "";
+            const suffix = p.eliminated
+              ? ` (${getT("eliminated", {}, "Out")})`
+              : w
+              ? ` (${w.place}.)`
+              : "";
             const titleText = `${p.name}${suffix}`;
 
             let headerClass = "player-name-header";
@@ -124,7 +131,7 @@ export default function Scoreboard({
 
         {/* Totals Row */}
         <div className="score-row total-row">
-          <div className="total-label">Total</div>
+          <div className="total-label">{getT("totalLabel", {}, "Total")}</div>
           {players.map((p, pi) => {
             const isActiveTotal =
               pi === currentPlayerIndex &&

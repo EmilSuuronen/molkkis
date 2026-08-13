@@ -1,8 +1,10 @@
 import React from "react";
 import { UndoIcon } from "../icons/Icons";
 
-export default function Keypad({ onKeyPress, onUndo, isEditing = false }) {
+export default function Keypad({ onKeyPress, onUndo, isEditing = false, t }) {
   const keys = Array.from({ length: 12 }, (_, i) => i + 1);
+
+  const getT = (key, fallback) => (t ? t(key) : fallback);
 
   return (
     <section className={`keypad card ${isEditing ? "editing-active" : ""}`}>
@@ -35,7 +37,7 @@ export default function Keypad({ onKeyPress, onUndo, isEditing = false }) {
           className="btn-undo"
           onClick={onUndo}
         >
-          <UndoIcon size={16} /> Undo
+          <UndoIcon size={16} /> {getT("undoBtn", "Undo")}
         </button>
       </div>
     </section>

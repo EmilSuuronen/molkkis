@@ -32,7 +32,8 @@ export default function SetupScreen({
   onStartGame,
   onRandomizeOrder,
   showAlert,
-  gameActive
+  gameActive,
+  t
 }) {
   const inputRefs = useRef([]);
 
@@ -94,7 +95,7 @@ export default function SetupScreen({
   const handleStart = (e) => {
     if (e) e.preventDefault();
     if (playerNames.length === 0) {
-      showAlert("Please add at least 1 player to start the game.", "No Players");
+      showAlert(t("minPlayersAlert"), t("playersTitle"));
       return;
     }
     onStartGame();
@@ -104,14 +105,14 @@ export default function SetupScreen({
     <main id="setup" className="screen active">
       {/* 1. Players Setup Card */}
       <section className="card">
-        <h2>Players</h2>
+        <h2>{t("playersTitle")}</h2>
         <div id="playersList" className="players-list">
           {playerNames.map((name, index) => (
             <div className="player-row" key={index}>
               <input
                 ref={(el) => (inputRefs.current[index] = el)}
                 type="text"
-                placeholder={!name ? `Player ${index + 1}` : ""}
+                placeholder={!name ? t("playerPlaceholder", { num: index + 1 }) : ""}
                 value={name}
                 aria-label="Player name"
                 maxLength={12}
@@ -142,7 +143,7 @@ export default function SetupScreen({
               <button
                 type="button"
                 className="btn remove-btn"
-                title="Remove"
+                title={t("removePlayer")}
                 onClick={() => handleRemovePlayer(index)}
               >
                 ✖
@@ -158,7 +159,7 @@ export default function SetupScreen({
             className="btn"
             onClick={() => handleAddPlayer("", true)}
           >
-            Add player
+            {t("addPlayer")}
           </button>
           <button
             type="button"
@@ -166,12 +167,12 @@ export default function SetupScreen({
             className="btn ghost"
             onClick={onRandomizeOrder}
           >
-            Randomize order
+            {t("randomizeOrder")}
           </button>
         </div>
 
         <div className="legend">
-          <p>Use ▲/▼ to set turn order.</p>
+          <p>{t("turnOrderHint")}</p>
         </div>
 
         <div className="start-actions">
@@ -181,18 +182,18 @@ export default function SetupScreen({
             className="btn primary"
             onClick={handleStart}
           >
-            Start game
+            {t("startGame")}
           </button>
         </div>
       </section>
 
       {/* 2. PWA Install Card */}
-      <PwaInstallCard showAlert={showAlert} />
+      <PwaInstallCard showAlert={showAlert} t={t} />
 
       {/* 3. Mölkky Setup Pin Diagram Card */}
       <div className="card">
         <section className="molkky-board">
-          <h3 className="molkky-title">Mölkky Setup</h3>
+          <h3 className="molkky-title">{t("molkkySetupTitle")}</h3>
 
           <div className="molkky-rows">
             {/* Row 1: 3 logs */}
@@ -224,22 +225,9 @@ export default function SetupScreen({
             </div>
           </div>
 
-          <p className="molkky-note">Throwing distance should be 3,5 meters</p>
+          <p className="molkky-note">{t("molkkySetupNote")}</p>
         </section>
       </div>
-
-      {/* 4. Rules Card */}
-      <section className="card">
-        <h3>Rules:</h3>
-        <ul className="list-rules">
-          <li>First thrower to exact 50 points wins</li>
-          <li>Single log thrown over will give score written on it</li>
-          <li>Multiple logs thrown over will give sum of logs that fell over</li>
-          <li>Fallen logs leaning on others will not be counted in scoring</li>
-          <li>A throw resulting in score over 50 will return the players score to 25</li>
-          <li>3 X misses in a row results in player being outed from the game</li>
-        </ul>
-      </section>
     </main>
   );
 }

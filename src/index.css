@@ -164,11 +164,11 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
     margin-bottom: 6px;
 }
 
-/* Top-Right Header Settings Button */
-.btn-settings-header {
+/* Top-Right Header Action Buttons (Settings & Language) */
+.btn-settings-header,
+.btn-language-header {
     position: absolute;
     top: 12px;
-    right: 16px; /* Moved to Top-Right */
     appearance: none;
     border: 1px solid var(--btn-subtle-border);
     background: var(--btn-subtle);
@@ -184,10 +184,18 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.btn-settings-header:hover {
-    background: var(--accent);
-    color: var(--accent-text);
+.btn-settings-header {
+    right: 16px;
+}
+
+.btn-language-header {
+    right: 62px;
+}
+
+.btn-settings-header:hover,
+.btn-language-header:hover {
     border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent);
 }
 
 .screen { padding: 12px; max-width: 1000px; margin: 0 auto; }
@@ -1121,4 +1129,72 @@ body.in-game #game.screen,
     background: var(--danger);
     color: #ffffff;
     border-color: var(--danger);
+}
+
+/* Language Selection Modal & Flag Cards */
+.language-modal-card {
+    max-width: 400px;
+}
+
+.language-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 12px 0 6px;
+}
+
+.language-card {
+    background: var(--btn-subtle);
+    border: 2px solid var(--btn-subtle-border);
+    border-radius: 14px;
+    padding: 16px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none;
+}
+
+.language-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    background: var(--card);
+}
+
+.language-card.selected {
+    border-color: var(--accent);
+    background: var(--card);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+.language-flag-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.language-card:hover .language-flag-wrapper {
+    transform: scale(1.08);
+}
+
+.language-card-name {
+    font-weight: 800;
+    font-size: 0.88rem;
+    color: var(--text);
+}
+
+.language-check-badge {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--accent);
 }

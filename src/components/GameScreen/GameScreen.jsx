@@ -12,7 +12,8 @@ export default function GameScreen({
   onKeyPress,
   onUndo,
   onEndGame,
-  gameActive
+  gameActive,
+  t
 }) {
   if (!gameActive) return null;
 
@@ -24,6 +25,7 @@ export default function GameScreen({
         player={currentPlayer}
         gameActive={gameActive}
         onEndGame={onEndGame}
+        t={t}
       />
       <Scoreboard
         players={players}
@@ -32,11 +34,13 @@ export default function GameScreen({
         editModeCell={editModeCell}
         onCellClick={onCellClick}
         gameActive={gameActive}
+        t={t}
       />
       <Keypad
         onKeyPress={onKeyPress}
         onUndo={onUndo}
         isEditing={Boolean(editModeCell)}
+        t={t}
       />
     </main>
   );

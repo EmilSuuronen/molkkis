@@ -1,34 +1,34 @@
 import React, { useState } from "react";
 
-export const THEMES = [
+export const THEME_CONFIGS = [
   {
     id: "default",
-    name: "Default (Legacy Blue)",
-    desc: "Midnight Slate with Vibrant Blue (#3877d3)",
+    nameKey: "themeDefault",
+    descKey: "themeDefaultDesc",
     swatches: ["#0d1117", "#161b22", "#3877d3", "#2563eb", "#60a5fa"]
   },
   {
     id: "forest",
-    name: "Forest Green",
-    desc: "Pine Teal, Sea Green & Dry Sage",
+    nameKey: "themeForest",
+    descKey: "themeForestDesc",
     swatches: ["#121619", "#2d4739", "#09814a", "#bcb382", "#e5c687"]
   },
   {
     id: "kawai",
-    name: "Kawai",
-    desc: "Pastel Pink, Rose & Lavender",
+    nameKey: "themeKawai",
+    descKey: "themeKawaiDesc",
     swatches: ["#1a1218", "#281a24", "#ff6b9d", "#f7aef8", "#ffd1dc"]
   },
   {
     id: "blackout",
-    name: "Blackout",
-    desc: "Pitch Black, Gray & Crimson",
+    nameKey: "themeBlackout",
+    descKey: "themeBlackoutDesc",
     swatches: ["#080808", "#141414", "#ff2a2a", "#a3a3a3", "#ffffff"]
   },
   {
     id: "fire",
-    name: "Fire",
-    desc: "Blazing Orange, Amber & Flame",
+    nameKey: "themeFire",
+    descKey: "themeFireDesc",
     swatches: ["#140d0b", "#211411", "#ff5500", "#ffaa00", "#ff3300"]
   }
 ];
@@ -38,13 +38,16 @@ export default function SettingsModal({
   onClose,
   currentTheme,
   onSelectTheme,
-  onClearData
+  onClearData,
+  t
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   if (!isOpen) return null;
 
-  const activeThemeObj = THEMES.find((t) => t.id === currentTheme) || THEMES[0];
+  const getT = (key, fallback) => (t ? t(key) : fallback);
+
+  const activeThemeObj = THEME_CONFIGS.find((cfg) => cfg.id === currentTheme) || THEME_CONFIGS[0];
 
   const handleSelect = (themeId) => {
     onSelectTheme(themeId);
@@ -58,7 +61,7 @@ export default function SettingsModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
-          <h2>Application Settings</h2>
+          <h2>{getT("settingsTitle", "Application Settings")}</h2>
           <button
             type="button"
             className="modal-close-btn"
@@ -71,8 +74,8 @@ export default function SettingsModal({
 
         <div className="modal-body">
           {/* Section 1: Custom Styled Theme Dropdown */}
-          <h3 className="settings-section-title">Color Theme</h3>
-          <p className="settings-subtitle">Select your preferred color scheme:</p>
+          <h3 className="settings-section-title">{getT("themeSectionTitle", "Color Theme")}</h3>
+          <p className="settings-subtitle">{getT("themeSectionSubtitle", "Select your preferred color scheme:")}</p>
 
           <div className="custom-dropdown-container">
             <button
@@ -83,7 +86,7 @@ export default function SettingsModal({
               aria-expanded={isDropdownOpen}
             >
               <div className="trigger-content">
-                <span className="trigger-title">{activeThemeObj.name}</span>
+                <span className="trigger-title">{getT(activeThemeObj.nameKey, activeThemeObj.id)}</span>
                 <div className="trigger-swatches">
                   {activeThemeObj.swatches.map((color, i) => (
                     <span
@@ -111,7 +114,7 @@ export default function SettingsModal({
 
             {isDropdownOpen && (
               <div className="custom-dropdown-menu" role="listbox">
-                {THEMES.map((theme) => {
+                {THEME_CONFIGS.map((theme) => {
                   const isSelected = currentTheme === theme.id;
                   return (
                     <div
@@ -123,10 +126,10 @@ export default function SettingsModal({
                     >
                       <div className="item-info">
                         <div className="item-header">
-                          <span className="item-name">{theme.name}</span>
+                          <span className="item-name">{getT(theme.nameKey, theme.id)}</span>
                           {isSelected && <span className="item-check">✓</span>}
                         </div>
-                        <span className="item-desc">{theme.desc}</span>
+                        <span className="item-desc">{getT(theme.descKey, "")}</span>
                       </div>
                       <div className="item-swatches">
                         {theme.swatches.map((color, i) => (
@@ -146,21 +149,21 @@ export default function SettingsModal({
 
           {/* Section 2: Data & Storage Clear Option */}
           <div className="settings-danger-zone">
-            <h3 className="settings-section-title danger-title">Data & Storage</h3>
-            <p className="settings-subtitle">Clear all local storage and cached memory:</p>
+            <h3 className="settings-section-title danger-title">{getT("dataSectionTitle", "Data & Storage")}</h3>
+            <p className="settings-subtitle">{getT("dataSectionSubtitle", "Clear all local storage and cached memory:")}</p>
             <button
               type="button"
               className="btn btn-clear-data"
               onClick={onClearData}
             >
-              Clear Storage & Cache
+              {getT("clearDataBtn", "Clear Storage & Cache")}
             </button>
           </div>
         </div>
 
         <div className="modal-actions">
           <button type="button" className="btn primary" onClick={onClose}>
-            Done
+            {getT("doneBtn", "Done")}
           </button>
         </div>
       </div>

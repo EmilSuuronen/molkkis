@@ -5,6 +5,8 @@ import SetupScreen from "./components/SetupScreen";
 import GameScreen from "./components/GameScreen/GameScreen";
 import ModalDialog from "./components/ModalDialog";
 import SettingsModal from "./components/SettingsModal";
+import LanguageModal from "./components/LanguageModal";
+import { TRANSLATIONS, getTranslation } from "./i18n/translations";
 import {
   assignPlayerColor,
   LOCAL_STORAGE_KEY
@@ -21,6 +23,7 @@ import {
 } from "./utils/gameLogic";
 
 const THEME_STORAGE_KEY = "molkkis_theme";
+const LANG_STORAGE_KEY = "molkkis_language";
 
 export default function App() {
   const [playerNames, setPlayerNames] = useState(["", ""]);
@@ -32,6 +35,7 @@ export default function App() {
   const [editModeCell, setEditModeCell] = useState(null);
   const [modal, setModal] = useState({ open: false });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
 
   const [currentTheme, setCurrentTheme] = useState(() => {
     try {
@@ -40,6 +44,17 @@ export default function App() {
       return "default";
     }
   });
+
+  const [currentLanguage, setCurrentLanguage] = useState(() => {
+    try {
+      return localStorage.getItem(LANG_STORAGE_KEY) || "fi";
+    } catch (err) {
+      return "fi";
+    }
+  });
+
+  // Translation helper function
+  const t = (key, params = {}) => getTranslation(currentLanguage, key, params);
 
   // Apply theme to document root
   useEffect(() => {
@@ -50,6 +65,15 @@ export default function App() {
       console.error("Failed to save theme to localStorage:", err);
     }
   }, [currentTheme]);
+
+  // Persist language setting
+  useEffect(() => {
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, currentLanguage);
+    } catch (err) {
+      console.error("Failed to save language to localStorage:", err);
+    }
+  }, [currentLanguage]);
 
   // Load initial game state from LocalStorage on mount
   useEffect(() => {
@@ -136,8 +160,8 @@ export default function App() {
         open: true,
         title,
         message,
-        confirmText: "Yes",
-        cancelText: "Cancel",
+        confirmText: t("confirmYesBtn"),
+        cancelText: t("cancelBtn"),
         showCancel: true,
         onConfirm: () => {
           setModal({ open: false });
@@ -157,7 +181,7 @@ export default function App() {
 
   const handleStartGame = () => {
     const newPlayers = playerNames.map((name, index) => ({
-      name: name.trim() || `Player ${index + 1}`,
+      name: name.trim() || t("playerPlaceholder", { num: index + 1 }),
       color: assignPlayerColor(index),
       scores: [],
       total: 0,
@@ -166,7 +190,7 @@ export default function App() {
     }));
 
     if (newPlayers.length === 0) {
-      showAlert("Please add at least 1 player to start the game.", "No Players");
+      showAlert(t("minPlayersAlert"), t("playersTitle"));
       return;
     }
 
@@ -285,19 +309,22 @@ export default function App() {
   };
 
   const showFinalResults = async (finalWinners = winners) => {
-    let message = "Final Results:\n\n";
+    let message = `${t("rankingsTitle")}:\n\n`;
     finalWinners
       .sort((a, b) => a.place - b.place)
       .forEach((w) => {
-        message += `${w.place}. ${w.name} (${w.total} points)\n`;
+        message += `${w.place}. ${w.name} (${w.total} p)\n`;
       });
-    await showAlert(message, "🏆 Game Over!");
+    await showAlert(message, `🏆 ${t("gameOverTitle")}`);
     setGameActive(false);
   };
 
   const handleEndGame = async () => {
     if (!gameActive) return;
-    const confirmEnd = await showConfirm("Are you sure you want to end the game?", "End Game");
+    const confirmEnd = await showConfirm(
+      t("endGameConfirmMessage"),
+      t("endGameConfirmTitle")
+    );
     if (!confirmEnd) return;
 
     let finalWinners = [...winners];
@@ -323,8 +350,8 @@ export default function App() {
   const handleClearData = async () => {
     setIsSettingsOpen(false);
     const confirmed = await showConfirm(
-      "This deletes all games and settings: are you sure you want to proceed?",
-      "Clear Storage & Cache"
+      t("clearConfirmMessage"),
+      t("clearConfirmTitle")
     );
 
     if (!confirmed) {
@@ -354,7 +381,10 @@ export default function App() {
     <div id="appRoot">
       <Header
         gameActive={gameActive}
+        currentLanguage={currentLanguage}
+        onOpenLanguage={() => setIsLanguageOpen(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        t={t}
       />
       <SetupScreen
         playerNames={playerNames}
@@ -363,6 +393,7 @@ export default function App() {
         onRandomizeOrder={handleRandomizeOrder}
         showAlert={showAlert}
         gameActive={gameActive}
+        t={t}
       />
       <GameScreen
         players={players}
@@ -374,6 +405,7 @@ export default function App() {
         onUndo={handleUndo}
         onEndGame={handleEndGame}
         gameActive={gameActive}
+        t={t}
       />
       <Footer gameActive={gameActive} />
       <ModalDialog modal={modal} onClose={() => setModal({ open: false })} />
@@ -383,6 +415,14 @@ export default function App() {
         currentTheme={currentTheme}
         onSelectTheme={setCurrentTheme}
         onClearData={handleClearData}
+        t={t}
+      />
+      <LanguageModal
+        isOpen={isLanguageOpen}
+        onClose={() => setIsLanguageOpen(false)}
+        currentLanguage={currentLanguage}
+        onSelectLanguage={setCurrentLanguage}
+        t={t}
       />
     </div>
   );
