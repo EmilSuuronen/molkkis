@@ -3,9 +3,9 @@ import { getCurrentRoundIndex } from "../../utils/gameLogic";
 import { EditPenIcon } from "../icons/Icons";
 
 export default function Scoreboard({
-  players,
-  currentPlayerIndex,
-  winners,
+  players = [],
+  currentPlayerIndex = 0,
+  winners = [],
   editModeCell,
   onCellClick,
   gameActive,
@@ -14,34 +14,49 @@ export default function Scoreboard({
   const scrollContainerRef = useRef(null);
   const activeTurnCellRef = useRef(null);
 
-  const numRounds = Math.max(...players.map((p) => p.scores.length), 0);
-  const activeRound = getCurrentRoundIndex(players);
+  const safePlayers = Array.isArray(players) ? players : [];
+  const safeWinners = Array.isArray(winners) ? winners : [];
+
+  const numRounds = Math.max(
+    ...safePlayers.map((p) => (p && Array.isArray(p.scores) ? p.scores.length : 0)),
+    0
+  );
+  const activeRound = getCurrentRoundIndex(safePlayers);
 
   const getT = (key, params, fallback) => (t ? t(key, params) : fallback);
 
   useEffect(() => {
     if (activeTurnCellRef.current && scrollContainerRef.current) {
-      const cellRect = activeTurnCellRef.current.getBoundingClientRect();
-      const containerRect = scrollContainerRef.current.getBoundingClientRect();
+      try {
+        const cellRect = activeTurnCellRef.current.getBoundingClientRect();
+        const containerRect = scrollContainerRef.current.getBoundingClientRect();
 
-      const targetLeft =
-        scrollContainerRef.current.scrollLeft +
-        (cellRect.left - containerRect.left) -
-        containerRect.width / 2 +
-        cellRect.width / 2;
-      const targetTop =
-        scrollContainerRef.current.scrollTop +
-        (cellRect.top - containerRect.top) -
-        containerRect.height / 2 +
-        cellRect.height / 2;
+        const targetLeft =
+          scrollContainerRef.current.scrollLeft +
+          (cellRect.left - containerRect.left) -
+          containerRect.width / 2 +
+          cellRect.width / 2;
+        const targetTop =
+          scrollContainerRef.current.scrollTop +
+          (cellRect.top - containerRect.top) -
+          containerRect.height / 2 +
+          cellRect.height / 2;
 
-      scrollContainerRef.current.scrollTo({
-        left: Math.max(0, targetLeft),
-        top: Math.max(0, targetTop),
-        behavior: "smooth"
-      });
+        if (typeof scrollContainerRef.current.scrollTo === "function") {
+          scrollContainerRef.current.scrollTo({
+            left: Math.max(0, targetLeft),
+            top: Math.max(0, targetTop),
+            behavior: "smooth"
+          });
+        } else {
+          scrollContainerRef.current.scrollLeft = Math.max(0, targetLeft);
+          scrollContainerRef.current.scrollTop = Math.max(0, targetTop);
+        }
+      } catch (err) {
+        console.warn("Auto-scroll failed silently:", err);
+      }
     }
-  }, [currentPlayerIndex, numRounds, players]);
+  }, [currentPlayerIndex, numRounds, safePlayers]);
 
   return (
     <section
@@ -53,18 +68,19 @@ export default function Scoreboard({
         {/* Header Row */}
         <div className="score-row header-row">
           <div className="round-header">{getT("roundHeader", {}, "#")}</div>
-          {players.map((p, idx) => {
+          {safePlayers.map((p, idx) => {
+            if (!p) return null;
             const isActive =
               idx === currentPlayerIndex &&
               !p.eliminated &&
-              !winners.some((w) => w.playerIndex === idx);
-            const w = winners.find((w) => w.playerIndex === idx);
+              !safeWinners.some((w) => w.playerIndex === idx);
+            const w = safeWinners.find((w) => w.playerIndex === idx);
             const suffix = p.eliminated
               ? ` (${getT("eliminated", {}, "Out")})`
               : w
               ? ` (${w.place}.)`
               : "";
-            const titleText = `${p.name}${suffix}`;
+            const titleText = `${p.name || ""}${suffix}`;
 
             let headerClass = "player-name-header";
             if (isActive) headerClass += " active-player";
@@ -88,12 +104,13 @@ export default function Scoreboard({
         {Array.from({ length: numRounds }).map((_, ri) => (
           <div className="score-row round" key={ri}>
             <div className="round-number">{ri + 1}</div>
-            {players.map((player, pi) => {
+            {safePlayers.map((player, pi) => {
+              if (!player) return null;
               const isTurn =
                 pi === currentPlayerIndex &&
                 ri === activeRound &&
                 !player.eliminated &&
-                !winners.some((w) => w.playerIndex === pi);
+                !safeWinners.some((w) => w.playerIndex === pi);
 
               const isEditing =
                 editModeCell &&
@@ -104,6 +121,8 @@ export default function Scoreboard({
               if (isTurn) cellClass += " current-player";
               if (player.eliminated) cellClass += " eliminated";
               if (isEditing) cellClass += " editing";
+
+              const scoreVal = player.scores ? player.scores[ri] : undefined;
 
               return (
                 <div
@@ -117,11 +136,11 @@ export default function Scoreboard({
                 >
                   {isEditing ? (
                     <span className="editing-cell-content">
-                      <span>{player.scores[ri] ?? "-"}</span>
+                      <span>{scoreVal ?? "-"}</span>
                       <EditPenIcon size={12} className="edit-pen-icon" />
                     </span>
                   ) : (
-                    player.scores[ri] ?? "-"
+                    scoreVal ?? "-"
                   )}
                 </div>
               );

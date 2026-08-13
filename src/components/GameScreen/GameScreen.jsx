@@ -4,9 +4,9 @@ import Scoreboard from "./Scoreboard";
 import Keypad from "./Keypad";
 
 export default function GameScreen({
-  players,
-  currentPlayerIndex,
-  winners,
+  players = [],
+  currentPlayerIndex = 0,
+  winners = [],
   editModeCell,
   onCellClick,
   onKeyPress,
@@ -15,9 +15,14 @@ export default function GameScreen({
   gameActive,
   t
 }) {
-  if (!gameActive) return null;
+  if (!gameActive || !Array.isArray(players) || players.length === 0) return null;
 
-  const currentPlayer = players[currentPlayerIndex];
+  const validIndex =
+    currentPlayerIndex >= 0 && currentPlayerIndex < players.length
+      ? currentPlayerIndex
+      : 0;
+
+  const currentPlayer = players[validIndex] || players[0];
 
   return (
     <main id="game" className="screen" style={{ display: "flex" }}>

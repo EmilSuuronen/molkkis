@@ -6,6 +6,8 @@ import GameScreen from "./components/GameScreen/GameScreen";
 import ModalDialog from "./components/ModalDialog";
 import SettingsModal from "./components/SettingsModal";
 import LanguageModal from "./components/LanguageModal";
+import SavedGameMatrixModal from "./components/SavedGames/SavedGameMatrixModal";
+import ExitGameModal from "./components/ExitGameModal";
 import { TRANSLATIONS, getTranslation } from "./i18n/translations";
 import {
   getRandomPlayerColor,
@@ -21,6 +23,11 @@ import {
   maybeStartNewRoundAndAlignTurn,
   undoLastScore
 } from "./utils/gameLogic";
+import {
+  getSavedGames,
+  saveGameToHistory,
+  deleteSavedGame
+} from "./utils/savedGamesStorage";
 
 const THEME_STORAGE_KEY = "molkkis_theme";
 const LANG_STORAGE_KEY = "molkkis_language";
@@ -40,10 +47,16 @@ export default function App() {
   const [gameActive, setGameActive] = useState(false);
   const [winners, setWinners] = useState([]);
   const [nextPlace, setNextPlace] = useState(1);
+  const [activeGameId, setActiveGameId] = useState(null);
   const [editModeCell, setEditModeCell] = useState(null);
   const [modal, setModal] = useState({ open: false });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+
+  // Saved Games State
+  const [savedGames, setSavedGames] = useState(() => getSavedGames());
+  const [selectedSavedGame, setSelectedSavedGame] = useState(null);
 
   const [currentTheme, setCurrentTheme] = useState(() => {
     try {
@@ -98,10 +111,17 @@ export default function App() {
           const { players: calcPlayers, winners: calcWinners, nextPlace: calcNext } =
             recalcGameState(state.players, state.winners || [], state.nextPlace || 1);
 
+          const validTurn = ensureValidCurrentPlayer(
+            calcPlayers,
+            state.currentPlayerIndex || 0,
+            calcWinners
+          );
+
           setPlayers(calcPlayers);
           setWinners(calcWinners);
           setNextPlace(calcNext);
-          setCurrentPlayerIndex(state.currentPlayerIndex || 0);
+          setCurrentPlayerIndex(validTurn);
+          setActiveGameId(state.activeGameId || null);
           setGameActive(true);
           return;
         }
@@ -111,10 +131,11 @@ export default function App() {
     }
   }, []);
 
-  // Save game state to LocalStorage
+  // Save active game state to LocalStorage
   useEffect(() => {
     if (gameActive && players.length > 0) {
       const state = {
+        activeGameId,
         players,
         currentPlayerIndex,
         gameActive,
@@ -133,7 +154,7 @@ export default function App() {
         console.error("Failed to clear localStorage:", err);
       }
     }
-  }, [players, currentPlayerIndex, gameActive, winners, nextPlace]);
+  }, [players, currentPlayerIndex, gameActive, winners, nextPlace, activeGameId]);
 
   // Toggle body class "in-game"
   useEffect(() => {
@@ -143,6 +164,66 @@ export default function App() {
       document.body.classList.remove("in-game");
     }
   }, [gameActive]);
+
+  // Helper function to handle game history persistence
+  const handleSaveCompletedGame = (gameData) => {
+    const updated = saveGameToHistory(gameData);
+    setSavedGames(updated);
+  };
+
+  // Helper function to delete saved game with confirmation
+  const handleDeleteSavedGame = async (gameId) => {
+    const confirmDelete = await showConfirm(
+      t("deleteGameConfirmMessage"),
+      t("deleteGameTitle")
+    );
+    if (!confirmDelete) return;
+
+    const updated = deleteSavedGame(gameId);
+    setSavedGames(updated);
+  };
+
+  // Resume a cancelled saved game
+  const handleResumeGame = async (gameToResume) => {
+    if (!gameToResume || !gameToResume.players) return;
+
+    if (gameActive) {
+      const confirmResume = await showConfirm(
+        t("resumeConfirmMessage"),
+        t("resumeConfirmTitle")
+      );
+      if (!confirmResume) return;
+    }
+
+    const { players: calcPlayers, winners: calcWinners, nextPlace: calcNext } =
+      recalcGameState(gameToResume.players, gameToResume.winners || [], gameToResume.nextPlace || 1);
+
+    const validTurn = ensureValidCurrentPlayer(
+      calcPlayers,
+      gameToResume.currentPlayerIndex || 0,
+      calcWinners
+    );
+
+    setPlayers(calcPlayers);
+    setWinners(calcWinners);
+    setNextPlace(calcNext);
+    setCurrentPlayerIndex(validTurn);
+    setActiveGameId(gameToResume.id || null);
+    setEditModeCell(null);
+    setGameActive(true);
+
+    if (selectedSavedGame) {
+      setSelectedSavedGame(null);
+    }
+  };
+
+  const handleOpenSavedGameMatrix = (game) => {
+    setSelectedSavedGame(game);
+  };
+
+  const handleCloseSavedGameMatrix = () => {
+    setSelectedSavedGame(null);
+  };
 
   // Alert and Confirm helper promise wrappers
   const showAlert = (message, title = "Notification", preventBackdropClose = true) => {
@@ -221,6 +302,8 @@ export default function App() {
       return;
     }
 
+    const newGameId = `game_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    setActiveGameId(newGameId);
     setPlayers(newPlayers);
     setCurrentPlayerIndex(0);
     setWinners([]);
@@ -315,6 +398,18 @@ export default function App() {
       ];
       setWinners(finalWinners);
       setGameActive(false);
+
+      // Save finished game to local storage
+      handleSaveCompletedGame({
+        id: activeGameId,
+        status: "finished",
+        players: alignedPlayers,
+        winners: finalWinners,
+        nextPlace: calcNext,
+        currentPlayerIndex: finalTurn
+      });
+      setActiveGameId(null);
+
       showFinalResults(finalWinners);
     } else {
       setCurrentPlayerIndex(finalTurn);
@@ -346,13 +441,13 @@ export default function App() {
     setGameActive(false);
   };
 
-  const handleEndGame = async () => {
+  const handleEndGame = () => {
     if (!gameActive) return;
-    const confirmEnd = await showConfirm(
-      t("endGameConfirmMessage"),
-      t("endGameConfirmTitle")
-    );
-    if (!confirmEnd) return;
+    setIsExitModalOpen(true);
+  };
+
+  const handleSaveAndExitGame = () => {
+    setIsExitModalOpen(false);
 
     let finalWinners = [...winners];
     let place = nextPlace;
@@ -370,7 +465,31 @@ export default function App() {
 
     setWinners(finalWinners);
     setNextPlace(place);
-    await showFinalResults(finalWinners);
+
+    // Save cancelled/paused game to local storage history
+    handleSaveCompletedGame({
+      id: activeGameId,
+      status: "cancelled",
+      players,
+      winners: finalWinners,
+      nextPlace: place,
+      currentPlayerIndex
+    });
+
+    setActiveGameId(null);
+    setGameActive(false);
+  };
+
+  const handleDiscardGame = () => {
+    setIsExitModalOpen(false);
+
+    // If active game was in savedGames history (e.g. a resumed game), remove it from savedGames history
+    if (activeGameId) {
+      const updated = deleteSavedGame(activeGameId);
+      setSavedGames(updated);
+    }
+
+    setActiveGameId(null);
     setGameActive(false);
   };
 
@@ -388,6 +507,7 @@ export default function App() {
 
     try {
       localStorage.clear();
+      setSavedGames([]);
     } catch (err) {
       console.error("Failed to clear localStorage:", err);
     }
@@ -421,6 +541,11 @@ export default function App() {
         onAddPlayer={handleAddPlayer}
         showAlert={showAlert}
         gameActive={gameActive}
+        savedGames={savedGames}
+        onDeleteGame={handleDeleteSavedGame}
+        onResumeGame={handleResumeGame}
+        onOpenMatrix={handleOpenSavedGameMatrix}
+        currentLanguage={currentLanguage}
         t={t}
       />
       <GameScreen
@@ -450,6 +575,22 @@ export default function App() {
         onClose={() => setIsLanguageOpen(false)}
         currentLanguage={currentLanguage}
         onSelectLanguage={setCurrentLanguage}
+        t={t}
+      />
+      <SavedGameMatrixModal
+        isOpen={!!selectedSavedGame}
+        onClose={handleCloseSavedGameMatrix}
+        game={selectedSavedGame}
+        onResumeGame={handleResumeGame}
+        onDeleteGame={handleDeleteSavedGame}
+        t={t}
+        currentLanguage={currentLanguage}
+      />
+      <ExitGameModal
+        isOpen={isExitModalOpen}
+        onClose={() => setIsExitModalOpen(false)}
+        onSaveAndExit={handleSaveAndExitGame}
+        onDiscard={handleDiscardGame}
         t={t}
       />
     </div>

@@ -137,7 +137,7 @@
     --row-bg: #180d0a;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin:0; height:100%; }
 body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); transition: background-color 0.3s ease, color 0.3s ease; }
 
@@ -480,9 +480,12 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
     justify-content: center;
     color: var(--muted);
     cursor: grab;
-    padding: 4px 2px;
+    padding: 6px 4px;
     flex-shrink: 0;
     transition: color 0.15s ease;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .drag-handle:hover,
@@ -695,9 +698,20 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
     box-shadow: 0 3px 0 #9c7546 !important; /* Darker wood bottom 3D border */
     border: 1px solid #f0cd94 !important;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
     cursor: pointer;
     transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
     touch-action: manipulation;
+}
+
+.log:focus,
+.log:focus-visible,
+.log:active {
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -729,11 +743,15 @@ body { font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, san
 
 /* In-Game Strict Viewport Locking & Active Game Screen */
 body.in-game {
+    height: 100% !important;
+    height: 100vh !important;
     height: 100dvh !important;
+    max-height: 100% !important;
+    max-height: 100vh !important;
     max-height: 100dvh !important;
     overflow: hidden !important;
-    position: fixed !important;
-    width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 body.in-game .app-header,
@@ -746,18 +764,25 @@ body.in-game #game.screen,
 #game.screen {
     display: flex !important;
     flex-direction: column !important;
-    height: 100dvh;
-    max-height: 100dvh;
-    width: 100vw;
-    max-width: 100vw;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100% !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
     padding: 0 !important;
     margin: 0 auto;
     box-sizing: border-box;
     overflow: hidden;
-    position: absolute;
-    inset: 0;
     gap: 0 !important;
     background: var(--bg);
+    z-index: 1000 !important;
 }
 
 /* Current Player Status Card at Top */
@@ -1650,3 +1675,575 @@ body.in-game #game.screen,
 .rule-item li {
     margin-bottom: 4px;
 }
+
+/* ==========================================================================
+   SAVED GAMES SECTION & SCOREBOARD MATRIX MODAL
+   ========================================================================== */
+
+.card-saved-games {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Header */
+.saved-games-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 4px;
+}
+
+.saved-games-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.saved-games-card-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text);
+    letter-spacing: -0.3px;
+}
+
+.saved-games-count-badge {
+    background: var(--btn-subtle);
+    border: 1px solid var(--btn-subtle-border);
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 2px 9px;
+    border-radius: 12px;
+}
+
+/* No Games Placeholder Card */
+.card-no-games {
+    padding: 24px 16px;
+    text-align: center;
+}
+
+.no-games-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.no-games-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--btn-subtle);
+    border: 1px solid var(--btn-subtle-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+.no-games-title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text);
+}
+
+.no-games-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 320px;
+    line-height: 1.45;
+}
+
+/* Saved Games List & Card Items */
+.saved-games-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.saved-game-item {
+    background: var(--btn-subtle);
+    border: 1px solid var(--btn-subtle-border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.saved-game-item:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.saved-game-item.latest-game-item {
+    border-left: 4px solid var(--accent);
+    background: linear-gradient(135deg, var(--btn-subtle) 0%, var(--card) 100%);
+}
+
+.saved-game-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.item-meta-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badge-latest {
+    background: rgba(56, 119, 211, 0.18);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 8px;
+    letter-spacing: 0.2px;
+}
+
+.badge-status {
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 8px;
+}
+
+.badge-status.status-finished {
+    background: rgba(39, 174, 96, 0.15);
+    color: #27ae60;
+    border: 1px solid rgba(39, 174, 96, 0.35);
+}
+
+.badge-status.badge-status-cancelled {
+    background: rgba(217, 83, 79, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(217, 83, 79, 0.35);
+}
+
+.saved-game-date {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+/* Actions */
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-delete-saved-game {
+    appearance: none;
+    border: 1px solid var(--btn-subtle-border);
+    background: transparent;
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-delete-saved-game:hover {
+    color: var(--danger);
+    border-color: var(--danger);
+    background: rgba(217, 83, 79, 0.12);
+}
+
+/* Winner / Status Lines */
+.saved-game-winner-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.winner-trophy-icon {
+    font-size: 1.1rem;
+}
+
+.winner-score {
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.saved-game-cancelled-line {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* Players Chips Row */
+.saved-game-players-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.saved-player-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-left-width: 3px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.chip-color-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.chip-name {
+    color: var(--text);
+}
+
+.chip-score {
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+.chip-rank {
+    background: var(--btn-subtle);
+    border: 1px solid var(--btn-subtle-border);
+    color: var(--accent);
+    font-size: 0.7rem;
+    padding: 0 4px;
+    border-radius: 4px;
+}
+
+/* CTA Row */
+.saved-game-cta-wrapper,
+.saved-game-cta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+}
+
+.btn-resume-game-cta {
+    appearance: none;
+    flex: 1;
+    min-width: 130px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: var(--accent-text, #ffffff);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    box-shadow: 0 2px 8px rgba(56, 119, 211, 0.25);
+}
+
+.btn-resume-game-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(56, 119, 211, 0.4);
+    filter: brightness(1.1);
+}
+
+.btn-view-matrix-cta {
+    appearance: none;
+    flex: 1;
+    min-width: 140px;
+    border: 1px solid var(--accent);
+    background: rgba(56, 119, 211, 0.12);
+    color: var(--accent);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.btn-view-matrix-cta:hover {
+    background: var(--accent);
+    color: var(--accent-text, #ffffff);
+    box-shadow: 0 3px 10px rgba(56, 119, 211, 0.35);
+}
+
+/* Expand / Collapse Button */
+.saved-games-expand-wrapper {
+    display: flex;
+    justify-content: center;
+    padding-top: 4px;
+}
+
+.btn-expand-saved-games {
+    appearance: none;
+    border: 1px solid var(--btn-subtle-border);
+    background: var(--btn-subtle);
+    color: var(--text);
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-expand-saved-games:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Saved Game Matrix Modal */
+.saved-game-matrix-card {
+    max-width: 780px;
+    width: 94%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 14px;
+}
+
+.saved-matrix-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.saved-matrix-header .modal-title {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.saved-matrix-date {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-weight: 600;
+    display: block;
+    margin-top: 2px;
+}
+
+.btn-close-modal {
+    appearance: none;
+    background: var(--btn-subtle);
+    border: 1px solid var(--btn-subtle-border);
+    color: var(--text);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-close-modal:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.saved-matrix-banner {
+    background: var(--btn-subtle);
+    border: 1px solid var(--btn-subtle-border);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.matrix-status-pills {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.status-pill {
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 12px;
+}
+
+.status-pill.pill-finished {
+    background: rgba(39, 174, 96, 0.2);
+    color: #27ae60;
+    border: 1px solid rgba(39, 174, 96, 0.4);
+}
+
+.status-pill.pill-cancelled {
+    background: rgba(217, 83, 79, 0.2);
+    color: var(--danger);
+    border: 1px solid rgba(217, 83, 79, 0.4);
+}
+
+.winner-pill {
+    background: rgba(251, 181, 79, 0.18);
+    border: 1px solid rgba(251, 181, 79, 0.4);
+    color: #fbb54f;
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 12px;
+}
+
+.matrix-players-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.player-summary-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-left-width: 3px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.summary-color-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.summary-player-name {
+    color: var(--text);
+}
+
+.summary-player-score {
+    color: var(--accent);
+}
+
+.summary-rank {
+    background: var(--btn-subtle);
+    border: 1px solid var(--btn-subtle-border);
+    color: var(--accent);
+    font-size: 0.72rem;
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
+.summary-out-badge {
+    color: var(--danger);
+    font-weight: 900;
+    font-size: 0.75rem;
+}
+
+.saved-matrix-board-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 50vh;
+    border-radius: var(--radius);
+    border: 1px solid var(--card-border);
+}
+
+.saved-matrix-board-wrapper .scoreboard {
+    margin: 0;
+    box-shadow: none;
+}
+
+/* Exit Game Modal Styling */
+.exit-game-modal-card {
+    max-width: 440px;
+    width: 90%;
+    padding: 24px;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.exit-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.exit-modal-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(217, 83, 79, 0.12);
+    color: var(--danger);
+    border: 1px solid rgba(217, 83, 79, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.exit-modal-message {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.exit-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.exit-modal-actions button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+
