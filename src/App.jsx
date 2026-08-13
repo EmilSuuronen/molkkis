@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import SetupScreen from "./components/SetupScreen";
 import GameScreen from "./components/GameScreen/GameScreen";
 import ModalDialog from "./components/ModalDialog";
+import SettingsModal from "./components/SettingsModal";
 import {
   assignPlayerColor,
   LOCAL_STORAGE_KEY
@@ -19,6 +20,8 @@ import {
   undoLastScore
 } from "./utils/gameLogic";
 
+const THEME_STORAGE_KEY = "molkkis_theme";
+
 export default function App() {
   const [playerNames, setPlayerNames] = useState(["", ""]);
   const [players, setPlayers] = useState([]);
@@ -28,8 +31,27 @@ export default function App() {
   const [nextPlace, setNextPlace] = useState(1);
   const [editModeCell, setEditModeCell] = useState(null);
   const [modal, setModal] = useState({ open: false });
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  // Load initial state from LocalStorage on mount
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    try {
+      return localStorage.getItem(THEME_STORAGE_KEY) || "default";
+    } catch (err) {
+      return "default";
+    }
+  });
+
+  // Apply theme to document root
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, currentTheme);
+    } catch (err) {
+      console.error("Failed to save theme to localStorage:", err);
+    }
+  }, [currentTheme]);
+
+  // Load initial game state from LocalStorage on mount
   useEffect(() => {
     try {
       const data = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -300,7 +322,10 @@ export default function App() {
 
   return (
     <div id="appRoot">
-      <Header gameActive={gameActive} />
+      <Header
+        gameActive={gameActive}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+      />
       <SetupScreen
         playerNames={playerNames}
         setPlayerNames={setPlayerNames}
@@ -322,6 +347,12 @@ export default function App() {
       />
       <Footer gameActive={gameActive} />
       <ModalDialog modal={modal} onClose={() => setModal({ open: false })} />
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        currentTheme={currentTheme}
+        onSelectTheme={setCurrentTheme}
+      />
     </div>
   );
 }
