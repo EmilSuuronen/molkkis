@@ -56,7 +56,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (card) card.style.display = "none";
     }
 
-    loadGameState();
+    const stateLoaded = loadGameState();
+    if (!stateLoaded && playersListEl && playersListEl.children.length === 0) {
+        addPlayerRow();
+        addPlayerRow();
+    }
 });
 
 function triggerPwaInstall() {
@@ -221,11 +225,19 @@ function randomizeOrder() {
     renumberPlaceholders();
 }
 
+function updateAddPlayerBtnState() {
+    const addPlayerBtn = document.getElementById("addPlayerBtn");
+    const playersListEl = document.getElementById("playersList");
+    if (addPlayerBtn && playersListEl) {
+        addPlayerBtn.disabled = playersListEl.children.length >= 8;
+    }
+}
+
 function addPlayerRow(name = "") {
     const playersListEl = document.getElementById("playersList");
-    const row = document.createElement("div");
-    const color = assignPlayerColor(playersListEl.children.length);
+    if (playersListEl.children.length >= 8) return;
 
+    const row = document.createElement("div");
     row.className = "player-row";
     row.innerHTML = `
     <input type="text" placeholder="Name" value="${name}" aria-label="Player name" maxlength="8"/>
@@ -252,10 +264,12 @@ function addPlayerRow(name = "") {
     row.querySelector(".remove-btn").addEventListener("click", () => {
         row.remove();
         renumberPlaceholders();
+        updateAddPlayerBtnState();
     });
 
     playersListEl.appendChild(row);
     renumberPlaceholders();
+    updateAddPlayerBtnState();
 }
 
 function renumberPlaceholders() {
@@ -269,7 +283,6 @@ function startGame(e) {
 
     const nameInputs = document.querySelectorAll("#playersList input[type='text']");
     players = [];
-    // Respect the DOM order (manual/randomized order in setup)
     nameInputs.forEach((input, index) => {
         const name = input.value.trim() || `Player ${index + 1}`;
         const color = assignPlayerColor(index);
@@ -283,7 +296,10 @@ function startGame(e) {
         });
     });
 
-    if (players.length === 0) return;
+    if (players.length === 0) {
+        showAlert("Please add at least 1 player to start the game.", "No Players");
+        return;
+    }
 
     currentPlayerIndex = 0;
     gameActive = true;
@@ -314,40 +330,67 @@ function getActivePlayerIndexes() {
     return active;
 }
 
+function ensureValidCurrentPlayer() {
+    if (!gameActive || players.length === 0) return;
+    const isCurrentActive = !players[currentPlayerIndex].eliminated &&
+        !winners.find(w => w.playerIndex === currentPlayerIndex);
+
+    if (!isCurrentActive) {
+        const active = getActivePlayerIndexes();
+        if (active.length > 0) {
+            let found = active.find(i => i >= currentPlayerIndex);
+            if (found === undefined) found = active[0];
+            currentPlayerIndex = found;
+        }
+    }
+}
+
 function recalcTotals() {
-    players.forEach((p, index) => {
+    players.forEach(p => {
         p.total = 0;
         p.misses = 0;
         p.eliminated = false;
-
-        let missStreak = 0;
-        for (const s of p.scores) {
-            if (s === "X") {
-                missStreak++;
-                if (missStreak >= 3) p.eliminated = true;
-            } else if (typeof s === "number") {
-                missStreak = 0;
-                p.total += s;
-                if (p.total > 50) p.total = 25; // official rule
-            }
-        }
-
-        // Flag winners reaching exactly 50
-        if (p.total >= 50 && !winners.find(w => w.playerIndex === index)) {
-            winners.push({
-                playerIndex: index,
-                name: p.name,
-                total: p.total,
-                place: nextPlace++
-            });
-        }
     });
 
+    winners = [];
+    nextPlace = 1;
+
+    const numRounds = Math.max(...players.map(p => p.scores.length), 0);
+
+    for (let ri = 0; ri < numRounds; ri++) {
+        players.forEach((p, pIdx) => {
+            if (p.eliminated) return;
+
+            const s = p.scores[ri];
+            if (s === "X") {
+                p.misses++;
+                if (p.misses >= 3) {
+                    p.eliminated = true;
+                }
+            } else if (typeof s === "number") {
+                p.misses = 0;
+                p.total += s;
+                if (p.total > 50) {
+                    p.total = 25;
+                }
+            }
+
+            if (p.total === 50 && !winners.find(w => w.playerIndex === pIdx)) {
+                winners.push({
+                    playerIndex: pIdx,
+                    name: p.name,
+                    total: p.total,
+                    place: nextPlace++
+                });
+            }
+        });
+    }
+
+    ensureValidCurrentPlayer();
     renderScoreboard();
 
-    // Auto-end if only one non-winner remains
     const active = getActivePlayerIndexes();
-    if (active.length === 1 && gameActive) {
+    if (active.length === 1 && gameActive && winners.length > 0) {
         gameActive = false;
         const last = active[0];
         winners.push({
@@ -521,6 +564,7 @@ function undoLast() {
     }
 
     recalcTotals();
+    ensureValidCurrentPlayer();
     saveGameState();
 }
 
