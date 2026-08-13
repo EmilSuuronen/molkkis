@@ -175,6 +175,27 @@ function clearGameState() {
     }
 }
 
+function setGameViewActive(active) {
+    const setupEl = document.getElementById("setup");
+    const gameEl = document.getElementById("game");
+    const footerEl = document.getElementById("appFooter");
+    const headerEl = document.querySelector(".app-header");
+
+    if (active) {
+        if (setupEl) setupEl.style.display = "none";
+        if (gameEl) gameEl.style.display = "flex";
+        if (footerEl) footerEl.style.display = "none";
+        if (headerEl) headerEl.style.display = "none";
+        document.body.classList.add("in-game");
+    } else {
+        if (setupEl) setupEl.style.display = "block";
+        if (gameEl) gameEl.style.display = "none";
+        if (footerEl) footerEl.style.display = "block";
+        if (headerEl) headerEl.style.display = "block";
+        document.body.classList.remove("in-game");
+    }
+}
+
 function loadGameState() {
     try {
         const data = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -192,11 +213,7 @@ function loadGameState() {
 
         recalcTotals();
         initKeypad();
-
-        document.getElementById("setup").style.display = "none";
-        document.getElementById("game").style.display = "block";
-        const footer = document.getElementById("appFooter");
-        if (footer) footer.style.display = "none";
+        setGameViewActive(true);
 
         return true;
     } catch (err) {
@@ -296,11 +313,7 @@ function startGame(e) {
 
     renderScoreboard();
     initKeypad();
-    document.getElementById("setup").style.display = "none";
-    document.getElementById("game").style.display = "block";
-    const footer = document.getElementById("appFooter");
-    if (footer) footer.style.display = "none";
-
+    setGameViewActive(true);
     saveGameState();
 }
 
@@ -672,11 +685,7 @@ async function showFinalResults() {
             message += `${w.place}. ${w.name} (${w.total} points)\n`;
         });
     await showAlert(message, "🏆 Game Over!");
-
-    document.getElementById("setup").style.display = "block";
-    document.getElementById("game").style.display = "none";
-    const footer = document.getElementById("appFooter");
-    if (footer) footer.style.display = "block";
+    setGameViewActive(false);
 }
 
 async function endGame() {
@@ -694,8 +703,5 @@ async function endGame() {
     });
 
     await showFinalResults();
-
-    document.getElementById("setup").style.display = "block";
-    document.getElementById("game").style.display = "none";
-    document.getElementById("appFooter").style.display = "block";
+    setGameViewActive(false);
 }

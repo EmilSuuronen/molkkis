@@ -167,49 +167,72 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
     gap: 5px;
 }
 
-/* Fixed viewport screen for game mode */
+/* In-Game Strict Viewport Locking */
+body.in-game {
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: fixed !important;
+    inset: 0 !important;
+}
+
+body.in-game .app-header,
+body.in-game #appFooter {
+    display: none !important;
+}
+
+/* Fixed Viewport Game Screen */
 #game.screen {
     display: flex;
     flex-direction: column;
     height: 100dvh;
     max-height: 100dvh;
-    padding: 8px;
+    width: 100vw;
+    max-width: 100vw;
+    padding: 6px;
+    margin: 0 auto;
     box-sizing: border-box;
     overflow: hidden;
+    position: absolute;
+    inset: 0;
 }
 
 /* Current Player Status Card at Top */
 .current-player-card {
-    flex-shrink: 0;
+    flex: 0 0 auto;
     background: var(--card);
-    border-radius: var(--radius);
-    padding: 10px 14px;
+    border-radius: 12px;
+    padding: 8px 12px;
     text-align: center;
-    margin-bottom: 8px;
+    margin: 0 0 6px 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .current-player-card h3 {
     margin: 0;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 800;
 }
 
 .current-player-card p {
     margin: 2px 0 0;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--muted);
 }
 
 /* Middle Scrollable Scoreboard Container */
 .score-scroll-container {
-    flex: 1;
+    flex: 1 1 0%;
     min-height: 0;
     overflow: auto;
     background: var(--card);
-    border-radius: var(--radius);
-    padding: 8px;
-    margin-bottom: 8px;
+    border-radius: 12px;
+    padding: 6px;
+    margin: 0 0 6px 0;
     position: relative;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -230,37 +253,57 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
     align-items: center;
 }
 
-/* Round Number Column (Sticky Left) */
+/* Round Number Sticky Left Column */
 .round-header,
 .round-number,
 .total-label {
     position: sticky;
     left: 0;
-    z-index: 10;
-    width: 36px;
-    min-width: 36px;
+    z-index: 25;
+    width: 38px;
+    min-width: 38px;
     text-align: center;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 0.85rem;
-    background: var(--card);
+    background-color: #171923 !important;
     padding: 6px 0;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 2px solid #2f3542;
     color: var(--muted);
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.4);
 }
 
+/* Sticky Header Row (Top) */
 .score-row.header-row {
     position: sticky;
     top: 0;
     z-index: 20;
-    background: var(--card);
+    background-color: #171923;
     padding-bottom: 4px;
 }
 
+/* Intersection of Sticky Top Header and Sticky Left Column */
 .score-row.header-row .round-header {
-    z-index: 30; /* Intersection of sticky header & sticky left column */
+    z-index: 40 !important;
+    background-color: #171923 !important;
 }
 
-/* Player Column Cells (80px width) */
+/* Sticky Total Row (Bottom) */
+.score-row.total-row {
+    position: sticky;
+    bottom: 0;
+    z-index: 15;
+    background-color: #171923;
+    padding-top: 4px;
+    border-top: 2px solid #2f3542;
+}
+
+/* Intersection of Sticky Bottom Total and Sticky Left Column */
+.score-row.total-row .total-label {
+    z-index: 35 !important;
+    background-color: #171923 !important;
+}
+
+/* Player Name Column Headers */
 .player-name-header {
     width: 80px;
     min-width: 80px;
@@ -282,7 +325,9 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
     box-shadow: 0 0 8px rgba(255, 225, 25, 0.6);
 }
 
+/* Score Cells */
 .score-cell {
+    z-index: 1;
     width: 80px;
     min-width: 80px;
     box-sizing: border-box;
@@ -296,7 +341,7 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
     transition: background 0.15s, transform 0.1s;
 }
 
-/* Current active player's cells */
+/* Current active player's cell */
 .score-cell.current-player {
     background-color: #fae56d !important;
     color: #111 !important;
@@ -309,16 +354,7 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
     color: #fff !important;
 }
 
-/* Total Row */
-.score-row.total-row {
-    position: sticky;
-    bottom: 0;
-    z-index: 15;
-    background: var(--card);
-    padding-top: 4px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-
+/* Total Cells */
 .total-cell {
     width: 80px;
     min-width: 80px;
@@ -337,6 +373,57 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
 .score-cell.eliminated {
     background-color: #3a3f4d !important;
     color: #8a919e !important;
+}
+
+/* Bottom Fixed Keypad Card */
+.keypad.card {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 8px;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 50;
+}
+
+.keypad-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.key {
+    padding: 10px 0;
+    border-radius: 10px;
+    border: 1px solid #2f3542;
+    background: #0f1320;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    color: whitesmoke;
+}
+
+#missBtn {
+    grid-column: 1 / -1;
+    padding: 10px 0;
+    border-radius: 10px;
+    border: 1px solid #ff1313;
+    background: #fd4c4c;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    color: whitesmoke;
+}
+
+.keypad-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.keypad-actions .btn {
+    padding: 10px;
+    font-size: 14px;
 }
 
 /* Modal overlay & dialog */
