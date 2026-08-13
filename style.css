@@ -167,120 +167,176 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
     gap: 5px;
 }
 
-/* Round number column */
-.round-number {
-    width: 40px;
-    font-weight: bold;
+/* Fixed viewport screen for game mode */
+#game.screen {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-height: 100dvh;
+    padding: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Current Player Status Card at Top */
+.current-player-card {
+    flex-shrink: 0;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 10px 14px;
     text-align: center;
-    background-color: #222;
-    color: #fff;
-    border-radius: 4px;
-    padding: 4px 0;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-.round-header {
-    width: 40px;
-    font-weight: bold;
-    text-align: center;
-    background-color: #222;
-    color: #fff;
-    border-radius: 4px;
-    padding: 4px 0;
+.current-player-card h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
 }
 
-/* Header row */
-.header-row {
-    font-weight: bold;
-    font-size: 1.1em;
+.current-player-card p {
+    margin: 2px 0 0;
+    font-size: 0.9rem;
+    color: var(--muted);
 }
 
-.player-name-header {
+/* Middle Scrollable Scoreboard Container */
+.score-scroll-container {
     flex: 1;
+    min-height: 0;
+    overflow: auto;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 8px;
+    margin-bottom: 8px;
+    position: relative;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Score Table Grid Layout */
+#scoreTable {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: max-content;
+    min-width: 100%;
+}
+
+.score-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+/* Round Number Column (Sticky Left) */
+.round-header,
+.round-number,
+.total-label {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    width: 36px;
+    min-width: 36px;
     text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    background: var(--card);
+    padding: 6px 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--muted);
+}
+
+.score-row.header-row {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--card);
+    padding-bottom: 4px;
+}
+
+.score-row.header-row .round-header {
+    z-index: 30; /* Intersection of sticky header & sticky left column */
+}
+
+/* Player Column Cells (80px width) */
+.player-name-header {
+    width: 80px;
+    min-width: 80px;
+    box-sizing: border-box;
     color: #fff;
-    padding: 4px 2px;
-    border-radius: 4px;
+    padding: 6px 4px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
 }
 
-/* Score cells for each player */
+.player-name-header.active-player {
+    outline: 2px solid #ffe119;
+    box-shadow: 0 0 8px rgba(255, 225, 25, 0.6);
+}
+
 .score-cell {
-    flex: 1;
+    width: 80px;
+    min-width: 80px;
+    box-sizing: border-box;
     text-align: center;
-    padding: 6px 0;
-    border-radius: 4px;
-    background-color: rgba(240, 240, 240, 0.1);
+    padding: 8px 0;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.06);
+    font-weight: 700;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
+    transition: background 0.15s, transform 0.1s;
 }
 
-/* Highlight current player */
-.current-player {
-    color: black;
-    border: 2px solid #333;
+/* Current active player's cells */
+.score-cell.current-player {
     background-color: #fae56d !important;
+    color: #111 !important;
+    font-weight: 800;
+    box-shadow: 0 0 6px rgba(250, 229, 109, 0.4);
 }
 
-/* Editing mode */
 .score-cell.editing {
     background-color: #ff8e49 !important;
+    color: #fff !important;
 }
 
-/* Totals row */
-.total-row {
-    font-weight: bold;
-    font-size: 1em;
-    margin-top: 5px;
+/* Total Row */
+.score-row.total-row {
+    position: sticky;
+    bottom: 0;
+    z-index: 15;
+    background: var(--card);
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.total-row .total-cell {
-    color: white;
-    flex: 1;
+.total-cell {
+    width: 80px;
+    min-width: 80px;
+    box-sizing: border-box;
     text-align: center;
-    padding: 6px 0;
-    border-radius: 4px;
-    background-color: rgba(240, 240, 240, 0.3);
+    padding: 8px 0;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: 800;
+    font-size: 1rem;
+    color: #fff;
 }
 
 /* Eliminated players */
 .player-name-header.eliminated,
 .score-cell.eliminated {
-    background-color: #b2bec3 !important;
-    color: #636e72 !important;
-}
-
-/* Optional: spacing for scoreboard */
-#scoreTable .score-row + .score-row {
-    margin-top: 3px;
-}
-
-.current-player-card {
-    position: sticky;   /* stays at bottom of viewport */
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--card);
-    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
-    padding: 12px;
-    margin-top: 10px;
-    text-align: center;
-    z-index: 100;
-}
-
-.current-player-card h3 {
-    margin: 0;
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-.current-player-card p {
-    margin: 4px 0 0;
-    font-size: 1em;
+    background-color: #3a3f4d !important;
+    color: #8a919e !important;
 }
 
 /* Modal overlay & dialog */

@@ -37,7 +37,7 @@
 <main id="setup" class="screen active">
 
     <section class="card">
-        <h2>Players (max 8)</h2>
+        <h2>Players</h2>
         <div id="playersList" class="players-list"></div>
 
         <div class="setup-actions">
@@ -119,29 +119,15 @@
 
 <!-- Game Screen -->
 <main id="game" class="screen">
-    <section class="status-bar">
-        <div id="turnInfo" class="turn-info"></div>
-        <div id="gameInfo" class="game-info"></div>
-    </section>
-
-    <!-- Scoreboard card -->
-    <section class="scoreboard card">
-        <div class="score-scroll">
-            <table id="scoreTable" class="score-table" aria-label="Mölkky scoreboard">
-                <thead>
-                <tr id="tableHeader">
-                    <th class="col-player">Player</th>
-                </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- Current Player Card -->
+    <!-- Current Player Card at Top -->
     <div id="currentPlayerCard" class="card current-player-card"></div>
 
-    <!-- Keypad Card -->
+    <!-- Scoreboard Scrollable Container in Middle -->
+    <section class="scoreboard card score-scroll-container" id="scoreScrollContainer">
+        <div id="scoreTable"></div>
+    </section>
+
+    <!-- Keypad Card Fixed at Bottom -->
     <section class="keypad card">
         <div class="keypad-grid" id="keypad">
             <!-- Buttons injected by JS-->

@@ -225,18 +225,8 @@ function randomizeOrder() {
     renumberPlaceholders();
 }
 
-function updateAddPlayerBtnState() {
-    const addPlayerBtn = document.getElementById("addPlayerBtn");
-    const playersListEl = document.getElementById("playersList");
-    if (addPlayerBtn && playersListEl) {
-        addPlayerBtn.disabled = playersListEl.children.length >= 8;
-    }
-}
-
 function addPlayerRow(name = "") {
     const playersListEl = document.getElementById("playersList");
-    if (playersListEl.children.length >= 8) return;
-
     const row = document.createElement("div");
     row.className = "player-row";
     row.innerHTML = `
@@ -264,12 +254,10 @@ function addPlayerRow(name = "") {
     row.querySelector(".remove-btn").addEventListener("click", () => {
         row.remove();
         renumberPlaceholders();
-        updateAddPlayerBtnState();
     });
 
     playersListEl.appendChild(row);
     renumberPlaceholders();
-    updateAddPlayerBtnState();
 }
 
 function renumberPlaceholders() {
@@ -405,9 +393,11 @@ function recalcTotals() {
 
 function renderScoreboard() {
     const container = document.getElementById("scoreTable");
+    if (!container) return;
     container.innerHTML = "";
 
     const numRounds = Math.max(...players.map(p => p.scores.length), 0);
+    const activeRound = getCurrentRoundIndex();
 
     // Header row
     const headerRow = document.createElement("div");
@@ -421,17 +411,22 @@ function renderScoreboard() {
     players.forEach((p, idx) => {
         const ph = document.createElement("div");
         ph.className = "player-name-header";
+        if (idx === currentPlayerIndex && !p.eliminated && !winners.find(w => w.playerIndex === idx)) {
+            ph.classList.add("active-player");
+        }
+        if (p.eliminated) ph.classList.add("eliminated");
+
         const w = winners.find(w => w.playerIndex === idx);
         const suffix = p.eliminated ? " (Out)" : (w ? ` (${w.place}.)` : "");
         ph.textContent = `${p.name}${suffix}`;
+        ph.title = `${p.name}${suffix}`;
         ph.style.backgroundColor = p.color;
         headerRow.appendChild(ph);
     });
     container.appendChild(headerRow);
 
-    // Visible rounds only
-    const startRound = Math.max(numRounds - MAX_VISIBLE_ROUNDS, 0);
-    for (let ri = startRound; ri < numRounds; ri++) {
+    // All rounds
+    for (let ri = 0; ri < numRounds; ri++) {
         const rowEl = document.createElement("div");
         rowEl.className = "score-row round";
 
@@ -443,9 +438,20 @@ function renderScoreboard() {
         players.forEach((player, pi) => {
             const cell = document.createElement("div");
             cell.className = "score-cell";
-            if (pi === currentPlayerIndex && !player.eliminated && !winners.find(w => w.playerIndex === pi)) {
+
+            const isTurn = (pi === currentPlayerIndex &&
+                            ri === activeRound &&
+                            !player.eliminated &&
+                            !winners.find(w => w.playerIndex === pi));
+
+            if (isTurn) {
                 cell.classList.add("current-player");
+                cell.id = "activeTurnCell";
             }
+            if (player.eliminated) {
+                cell.classList.add("eliminated");
+            }
+
             cell.textContent = player.scores[ri] ?? "-";
             cell.dataset.playerIndex = pi;
             cell.dataset.roundIndex = ri;
@@ -461,6 +467,7 @@ function renderScoreboard() {
     totalRow.className = "score-row total-row";
 
     const totalLabel = document.createElement("div");
+    totalLabel.className = "total-label";
     totalLabel.textContent = "Total";
     totalRow.appendChild(totalLabel);
 
@@ -493,6 +500,27 @@ function renderScoreboard() {
         cpCard.style.display = "none";
     }
 
+    requestAnimationFrame(() => {
+        scrollToActiveTurn();
+    });
+}
+
+function scrollToActiveTurn() {
+    const activeCell = document.getElementById("activeTurnCell");
+    const container = document.getElementById("scoreScrollContainer");
+    if (!activeCell || !container) return;
+
+    const cellRect = activeCell.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    const targetLeft = container.scrollLeft + (cellRect.left - containerRect.left) - (containerRect.width / 2) + (cellRect.width / 2);
+    const targetTop = container.scrollTop + (cellRect.top - containerRect.top) - (containerRect.height / 2) + (cellRect.height / 2);
+
+    container.scrollTo({
+        left: Math.max(0, targetLeft),
+        top: Math.max(0, targetTop),
+        behavior: "smooth"
+    });
 }
 
 function nextTurn() {
